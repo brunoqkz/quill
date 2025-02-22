@@ -1,0 +1,12 @@
+# Node
+node_modules
+*.log
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+.dockerignore
