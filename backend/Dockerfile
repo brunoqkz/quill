@@ -11,7 +11,7 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["nodemon", "./bin/www"]
+CMD ["./node_modules/.bin/nodemon", "./bin/www"]
 
 # prod image for prod deployment
 FROM base AS production
