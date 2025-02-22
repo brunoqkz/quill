@@ -1,0 +1,44 @@
+# node dependencies
+node_modules
+npm-debug.log
+
+# git stuff
+.git
+.gitignore
+.gitattributes
+
+# env files for local dev
+.env
+.env.local
+.env.*.local
+
+# IDE folders and files
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Docker stuff
+Dockerfile
+.dockerignore
+
+# Logs
+logs
+*.log
+
+# Build output
+dist
+build
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Documentation
+README.md
+docs
+*.md
