@@ -1,0 +1,51 @@
+services:
+  frontend:
+    container_name: quill-frontend
+    restart: unless-stopped
+    build:
+      context: ./frontend/
+      target: development
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    container_name: quill-backend
+    restart: unless-stopped
+    build:
+      context: ./backend/
+      target: development
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - DB_NAME=quill_db
+      - DB_PORT=3306
+    volumes:
+      - ./backend/:/app
+      - /app/node_modules
+    depends_on:
+      - db
+
+  db:
+    container_name: quill-database
+    restart: unless-stopped
+    image: mysql:8.4
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=quill_db
+    volumes:
+      - ./backend/database/scripts/:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
