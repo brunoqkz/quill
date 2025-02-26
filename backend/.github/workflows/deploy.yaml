@@ -17,6 +17,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
       - name: Checkout code
@@ -36,4 +39,4 @@ jobs:
           echo "Deploying image: ghcr.io/${{ github.repository }}:${{ env.IMAGE_TAG }}"
           echo "This is a placeholder for our actual deployment commands"
           # For example:
-          # ssh user@some-azure-server "docker pull ghcr.io/${{ github.repository }}:${{ env.IMAGE_TAG }} && docker-compose up -d"
+          # ssh user@some-azure-server "docker pull ghcr.io/${{ github.repository }}-backend:${{ env.IMAGE_TAG }} && docker-compose up -d"
