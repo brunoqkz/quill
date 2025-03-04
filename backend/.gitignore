@@ -6,3 +6,6 @@ package-lock.json
 # VSCode settings
 .vscode/
 *.code-workspace
+
+# misc
+.env
