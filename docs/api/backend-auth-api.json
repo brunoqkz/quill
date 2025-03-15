@@ -1,0 +1,225 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Quill's Authentication System API",
+    "version": "1.0.0",
+    "description": "API for authentication on Quill using Firebase and MySQL."
+  },
+  "paths": {
+    "/api/auth/register/author": {
+      "post": {
+        "summary": "Register a new author",
+        "description": "Creates a new author user in Firebase and MySQL. Authors can self-register.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "John Doe" },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "securePass123"
+                  },
+                  "role_id": { "type": "integer", "example": 3 }
+                },
+                "required": ["name", "email", "password", "role_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User registered successfully." },
+          "400": { "description": "Invalid input." },
+          "409": { "description": "Email already exists." }
+        }
+      }
+    },
+    "/api/auth/register/employee": {
+      "post": {
+        "summary": "Register a new employee",
+        "description": "Creates a new employee user in Firebase and MySQL. Employees are registered by another employee (e.g., HR).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "Jane Smith" },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "jane@etherealink.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "securePass123"
+                  },
+                  "role_id": { "type": "integer", "example": 2 },
+                  "department_id": { "type": "integer", "example": 1 },
+                  "registered_by": {
+                    "type": "string",
+                    "example": "hr@etherealink.com"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "role_id",
+                  "department_id",
+                  "registered_by"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Employee registered successfully." },
+          "400": { "description": "Invalid input." },
+          "409": { "description": "Email already exists." },
+          "404": { "description": "Invalid department ID." }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Log in a user",
+        "description": "Authenticate a user and return a Firebase token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "securePass123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User authenticated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsIn..."
+                    },
+                    "expires_in": { "type": "integer", "example": 3600 }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid credentials." }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "summary": "Log out a user",
+        "description": "Invalidate the Firebase token (client-side only).",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": { "description": "User logged out successfully." },
+          "401": { "description": "Invalid or missing token." }
+        }
+      }
+    },
+    "/api/auth/verify": {
+      "post": {
+        "summary": "Verify a user's token",
+        "description": "Verifies and decodes a Firebase JWT token.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsIn..."
+                  }
+                },
+                "required": ["token"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token verified successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uid": {
+                      "type": "string",
+                      "example": "firebase-uid-12345"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "john@example.com"
+                    },
+                    "role_id": { "type": "integer", "example": 2 }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid token." }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
