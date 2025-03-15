@@ -18,34 +18,6 @@ USE `quill_db`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `authentication`
---
-
-DROP TABLE IF EXISTS `authentication`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `authentication` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
-  `salt` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_id` (`user_id`),
-  CONSTRAINT `authentication_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `authentication`
---
-
-LOCK TABLES `authentication` WRITE;
-/*!40000 ALTER TABLE `authentication` DISABLE KEYS */;
-/*!40000 ALTER TABLE `authentication` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `authors`
 --
 
@@ -328,35 +300,6 @@ INSERT INTO `roles` VALUES (1,'admin'),(3,'author'),(2,'employee');
 UNLOCK TABLES;
 
 --
--- Table structure for table `sessions`
---
-
-DROP TABLE IF EXISTS `sessions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sessions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `auth_id` int NOT NULL,
-  `token` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `expires_at` timestamp NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `token` (`token`),
-  KEY `auth_id` (`auth_id`),
-  CONSTRAINT `sessions_ibfk_1` FOREIGN KEY (`auth_id`) REFERENCES `authentication` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sessions`
---
-
-LOCK TABLES `sessions` WRITE;
-/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `users`
 --
 
@@ -365,11 +308,13 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `firebase_uid` varchar(128) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `role_id` int NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `firebase_uid` (`firebase_uid`),
   UNIQUE KEY `email` (`email`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
@@ -447,4 +392,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-21 19:52:04
+-- Dump completed on 2025-03-15  6:39:18
