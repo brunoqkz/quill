@@ -28,6 +28,9 @@ services:
       - DB_PASSWORD=password
       - DB_NAME=quill_db
       - DB_PORT=3306
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
     volumes:
       - ./backend/:/app
       - /app/node_modules
