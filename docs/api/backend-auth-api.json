@@ -47,6 +47,11 @@
       "post": {
         "summary": "Register a new employee",
         "description": "Creates a new employee user in Firebase and MySQL. Employees are registered by another employee (e.g., HR).",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -89,124 +94,6 @@
           "400": { "description": "Invalid input." },
           "409": { "description": "Email already exists." },
           "404": { "description": "Invalid department ID." },
-          "500": { "description": "Internal server error." }
-        }
-      }
-    },
-    "/api/auth/login": {
-      "post": {
-        "summary": "Log in a user",
-        "description": "Authenticate a user and return a Firebase token.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "john@example.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "example": "securePass123"
-                  }
-                },
-                "required": ["email", "password"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User authenticated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "token": {
-                      "type": "string",
-                      "example": "eyJhbGciOiJIUzI1NiIsIn..."
-                    },
-                    "expires_in": { "type": "integer", "example": 3600 }
-                  }
-                }
-              }
-            }
-          },
-          "401": { "description": "Invalid credentials." },
-          "500": { "description": "Internal server error." }
-        }
-      }
-    },
-    "/api/auth/logout": {
-      "post": {
-        "summary": "Log out a user",
-        "description": "Invalidate the Firebase token (client-side only).",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": { "description": "User logged out successfully." },
-          "401": { "description": "Invalid or missing token." }
-        }
-      }
-    },
-    "/api/auth/verify": {
-      "post": {
-        "summary": "Verify a user's token",
-        "description": "Verifies and decodes a Firebase JWT token.",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "token": {
-                    "type": "string",
-                    "example": "eyJhbGciOiJIUzI1NiIsIn..."
-                  }
-                },
-                "required": ["token"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Token verified successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "uid": {
-                      "type": "string",
-                      "example": "firebase-uid-12345"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "john@example.com"
-                    },
-                    "role_id": { "type": "integer", "example": 2 }
-                  }
-                }
-              }
-            }
-          },
-          "401": { "description": "Invalid token." },
           "500": { "description": "Internal server error." }
         }
       }
