@@ -38,7 +38,8 @@
         "responses": {
           "201": { "description": "User registered successfully." },
           "400": { "description": "Invalid input." },
-          "409": { "description": "Email already exists." }
+          "409": { "description": "Email already exists." },
+          "500": { "description": "Internal server error." }
         }
       }
     },
@@ -87,7 +88,8 @@
           "201": { "description": "Employee registered successfully." },
           "400": { "description": "Invalid input." },
           "409": { "description": "Email already exists." },
-          "404": { "description": "Invalid department ID." }
+          "404": { "description": "Invalid department ID." },
+          "500": { "description": "Internal server error." }
         }
       }
     },
@@ -136,7 +138,8 @@
               }
             }
           },
-          "401": { "description": "Invalid credentials." }
+          "401": { "description": "Invalid credentials." },
+          "500": { "description": "Internal server error." }
         }
       }
     },
@@ -203,7 +206,8 @@
               }
             }
           },
-          "401": { "description": "Invalid token." }
+          "401": { "description": "Invalid token." },
+          "500": { "description": "Internal server error." }
         }
       }
     }
