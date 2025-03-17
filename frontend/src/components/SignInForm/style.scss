@@ -1,0 +1,45 @@
+form {
+  color: var(--quill-navy);
+
+  fieldset {
+    min-width: 320px;
+    padding: 2rem;
+    border-color: var(--quill-navy);
+
+    input {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--quill-navy);
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .actions {
+      margin-bottom: 2rem;
+    }
+
+    @mixin button($name, $color, $bg-color, $bd-color) {
+      .btn-#{$name} {
+        flex: 1;
+        color: $color;
+        background-color: $bg-color;
+        padding: 0.5rem 1rem;
+        border: 1px solid $bd-color;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    }
+
+    @include button(
+      "sign-in",
+      var(--quill-navy),
+      var(--quill-grey),
+      var(--quill-navy)
+    );
+    @include button(
+      "register",
+      var(--quill-grey),
+      var(--quill-navy),
+      var(--quill-navy)
+    );
+  }
+}
