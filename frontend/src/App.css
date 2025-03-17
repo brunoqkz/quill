@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
 /* Global Settings */
+:root {
+  --quill-navy: #2a3d66;
+  --quill-gold: #d4af37;
+  --quill-burgundy: #800020;
+  --quill-teal: #669999;
+  --quill-grey: #f5f5f5;
+  --quill-dark-grey: #333333;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
