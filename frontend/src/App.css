@@ -1,1 +1,63 @@
 @import "tailwindcss";
+
+/* Global Settings */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-size: 62.5%;
+  line-height: 1.6;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+main {
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 3.6rem;
+}
+
+h2 {
+  font-size: 2.4rem;
+}
+
+p,
+strong,
+a,
+span,
+button,
+input,
+label,
+select,
+option,
+div {
+  font-size: 1.8rem;
+}
+
+/* Queries for Tablets and Computers */
+/* Mobile First Approach */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 2.8rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  p,
+  strong,
+  a,
+  span,
+  button,
+  input,
+  label,
+  select,
+  option {
+    font-size: 1.4rem;
+  }
+}
