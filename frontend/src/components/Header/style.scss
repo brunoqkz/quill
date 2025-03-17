@@ -1,5 +1,5 @@
 header {
-  background: #d4af37;
+  background: var(--quill-gold);
   padding: 1rem 3rem;
 
   img {
@@ -8,11 +8,11 @@ header {
   }
 
   h1 {
-    color: #2a3d66;
+    color: var(--quill-navy);
   }
 
   button {
-    background-color: #2a3d66;
+    background-color: var(--quill-navy);
     padding: 1rem 2rem;
     border-radius: 5px;
   }
