@@ -10,3 +10,7 @@ node_modules
 # Docker
 Dockerfile
 .dockerignore
+
+
+# Local Environment Variables
+.env
