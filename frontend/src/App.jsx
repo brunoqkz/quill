@@ -1,13 +1,17 @@
 import "./App.css";
+import Footer from "./components/Footer";
 import Header from "./components/Header";
 import SignInForm from "./components/SignInForm";
 
 function App() {
   return (
-    <main className="flex flex-col h-screen">
+    <>
       <Header />
-      <SignInForm />
-    </main>
+      <main className="flex flex-col h-screen">
+        <SignInForm />
+      </main>
+      <Footer />
+    </>
   );
 }
 
