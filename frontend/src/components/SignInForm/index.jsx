@@ -1,6 +1,7 @@
 import "./style.scss";
 import { useState } from "react";
 import { useAuth } from "../AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 /**
  * SignInForm component
@@ -12,6 +13,7 @@ function SignInForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   /**
    * Handle login form submission
@@ -25,7 +27,7 @@ function SignInForm() {
 
     try {
       await login(email, password);
-      // TODO: Redirect to dashboard
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message);
     } finally {
