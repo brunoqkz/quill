@@ -58,7 +58,11 @@ function SignInForm() {
           <button type="submit" className="btn-sign-in" disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </button>
-          <button type="button" className="btn-register">
+          <button
+            type="button"
+            className="btn-register"
+            onClick={() => navigate("/register-author")}
+          >
             Register
           </button>
         </div>
