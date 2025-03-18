@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
 
   /**
-   * Sign in with email and password
+   * Sign in with email and password and set user and token
    * @param {string} email
    * @param {string} password
    * @returns {Promise<void>}
@@ -33,21 +33,40 @@ export const AuthProvider = ({ children }) => {
       const idToken = await userCredential.user.getIdToken();
       setUser(userCredential.user);
       setToken(idToken);
-      console.log("JWT Token:", idToken);
     } catch (error) {
-      console.error("Login Error:", error);
-      throw error;
+      throw mapAuthError(error);
     }
   };
 
   /**
-   * Sign out
+   * Sign out the user
    * @returns {Promise<void>}
    */
   const logout = async () => {
     await signOut(auth);
     setUser(null);
     setToken(null);
+  };
+
+  /**
+   * Map auth error to custom error
+   * @param {Object} error
+   * @returns {Error}
+   */
+  const mapAuthError = (error) => {
+    console.log("Error:", error);
+
+    switch (error.code) {
+      case "auth/invalid-credential":
+      case "auth/invalid-login-credentials":
+        return new Error("Invalid email or password.");
+      case "auth/too-many-requests":
+        return new Error("Too many attempts. Try again later.");
+      case "auth/network-request-failed":
+        return new Error("Check your internet connection.");
+      default:
+        return new Error("An unexpected error occurred.");
+    }
   };
 
   return (
