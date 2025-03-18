@@ -36,7 +36,7 @@
           }
         },
         "responses": {
-          "201": { "description": "User registered successfully." },
+          "201": { "description": "Author registered successfully." },
           "400": { "description": "Invalid input." },
           "409": { "description": "Email already exists." },
           "500": { "description": "Internal server error." }
@@ -92,9 +92,8 @@
         "responses": {
           "201": { "description": "Employee registered successfully." },
           "400": { "description": "Invalid input." },
-          "401": { "description": "Invalid or expired token." },
-          "403": { "description": "User not found." },
-          "404": { "description": "Invalid department ID." },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
           "409": { "description": "Email already exists." },
           "500": { "description": "Internal server error." }
         }
