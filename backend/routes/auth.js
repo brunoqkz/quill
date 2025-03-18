@@ -136,7 +136,7 @@ router.post("/register/employee", verifyToken, async (req, res) => {
     );
 
     if (!result || result.length === 0) {
-      return res.status(403).json({ error: "User not found." });
+      return res.status(403).json({ error: "Access Denied." });
     }
 
     const { role, department } = result[0];
@@ -189,7 +189,8 @@ router.post("/register/employee", verifyToken, async (req, res) => {
     }
 
     if (error.code === "ER_BAD_FIELD_ERROR") {
-      return res.status(404).json({ error: "Invalid department ID." });
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Internal server error." });
     }
 
     res.status(500).json({ error: error.message || "Internal server error." });
