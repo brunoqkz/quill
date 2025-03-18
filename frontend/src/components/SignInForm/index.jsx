@@ -6,7 +6,7 @@ function SignInForm() {
   const [password, setPassword] = useState("");
 
   return (
-    <form className="flex flex-1 justify-center items-center">
+    <form className="flex justify-center">
       <fieldset className="flex flex-col gap-2 border-1 rounded-lg">
         <label>E-mail</label>
         <input
