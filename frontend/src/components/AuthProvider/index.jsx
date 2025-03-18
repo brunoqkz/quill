@@ -1,5 +1,9 @@
 import { createContext, useContext, useState } from "react";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import { auth } from "../../../firebase";
 
 /**
@@ -49,6 +53,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Send a password reset email
+   * @param {string} email
+   * @returns {Promise<void>}
+   */
+  const sendPasswordReset = async (email) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      throw mapAuthError(error);
+    }
+  };
+
+  /**
    * Map auth error to custom error
    * @param {Object} error
    * @returns {Error}
@@ -70,7 +87,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, login, logout, sendPasswordReset }}
+    >
       {children}
     </AuthContext.Provider>
   );
