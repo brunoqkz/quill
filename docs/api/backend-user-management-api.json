@@ -1,0 +1,202 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Quill's User Management API",
+    "version": "1.0.0",
+    "description": "API for managing user data in Quill, including retrieval, creation, update, and deletion of user records."
+  },
+  "paths": {
+    "/api/users": {
+      "get": {
+        "summary": "Get a list of users",
+        "description": "Retrieve a paginated list of users.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of users retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "500": { "description": "Internal server error." }
+        }
+      },
+      "post": {
+        "summary": "Create a new user",
+        "description": "Create a new user in the system.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "John Doe" },
+                  "email": { "type": "string", "example": "john@example.com" },
+                  "password": { "type": "string", "example": "password123" },
+                  "role_id": { "type": "integer", "example": 2 }
+                },
+                "required": ["name", "email", "password", "role_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User created successfully." },
+          "400": { "description": "Invalid input." },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "500": { "description": "Internal server error." }
+        }
+      }
+    },
+    "/api/users/{userId}": {
+      "get": {
+        "summary": "Get user details",
+        "description": "Retrieve details of a specific user by their ID. Includes role-specific information if available.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserWithRole" }
+              }
+            }
+          },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "404": { "description": "User not found." },
+          "500": { "description": "Internal server error." }
+        }
+      },
+      "patch": {
+        "summary": "Update user details",
+        "description": "Update information of a specific user.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "John Doe" },
+                  "email": { "type": "string", "example": "john@example.com" },
+                  "role_id": { "type": "integer", "example": 2 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "User updated successfully." },
+          "400": { "description": "Invalid input." },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "404": { "description": "User not found." },
+          "500": { "description": "Internal server error." }
+        }
+      },
+      "delete": {
+        "summary": "Delete user",
+        "description": "Remove a user from the system by their ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "User deleted successfully." },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "404": { "description": "User not found." },
+          "500": { "description": "Internal server error." }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "John Doe" },
+          "email": { "type": "string", "example": "john@example.com" },
+          "role_id": { "type": "integer", "example": 2 },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Author": {
+        "type": "object",
+        "properties": {
+          "bio": {
+            "type": "string",
+            "example": "Author of several books."
+          },
+          "website": {
+            "type": "string",
+            "example": "www.authorwebsite.ca"
+          }
+        }
+      },
+      "Employee": {
+        "type": "object",
+        "properties": {
+          "department": { "type": "string", "example": "Editorial" }
+        }
+      },
+      "UserWithRole": {
+        "allOf": [
+          { "$ref": "#/components/schemas/User" },
+          {
+            "oneOf": [
+              { "$ref": "#/components/schemas/Author" },
+              { "$ref": "#/components/schemas/Employee" }
+            ]
+          }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [{ "bearerAuth": [] }]
+}
