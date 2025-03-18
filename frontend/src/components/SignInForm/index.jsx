@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
  * @returns {JSX.Element}
  */
 function SignInForm() {
-  const { login } = useAuth();
+  const { login, sendPasswordReset } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,6 +32,23 @@ function SignInForm() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  /**
+   * Handle password reset
+   * @param {Event} e
+   * @returns {Promise<void>}
+   */
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      await sendPasswordReset(email);
+      setError("Password reset email sent! Check your inbox.");
+    } catch (err) {
+      setError("Error sending password reset email.");
     }
   };
 
@@ -69,6 +86,7 @@ function SignInForm() {
         <a
           href="#"
           className="text-blue-600 hover:text-blue-800 visited:text-purple-600"
+          onClick={handlePasswordReset}
         >
           Forgot your password?
         </a>
