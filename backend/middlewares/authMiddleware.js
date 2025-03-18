@@ -6,7 +6,7 @@ const verifyToken = async (req, res, next) => {
 
   // If no token is provided, return a 401 error response
   if (!token) {
-    return res.status(401).json({ error: "No token provided." });
+    return res.status(401).json({ error: "Authentication required." });
   }
 
   try {
@@ -27,7 +27,7 @@ const verifyToken = async (req, res, next) => {
       error.code === "auth/argument-error"
     ) {
       // Invalid or expired token
-      return res.status(401).json({ error: "Invalid or expired token." });
+      return res.status(401).json({ error: "Authentication required." });
     }
 
     // If it is not an invalid token error, it's a server-related issue
