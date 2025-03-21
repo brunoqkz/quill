@@ -30,6 +30,14 @@ function Dashboard() {
         <span className="font-bold">{user && user.displayName}</span>, welcome
         to the dashboard!
       </p>
+      <div className="user-management">
+        <button
+          className="bg-blue-500 text-white rounded"
+          onClick={() => navigate("/users")}
+        >
+          Go to User Management
+        </button>
+      </div>
     </section>
   );
 }
