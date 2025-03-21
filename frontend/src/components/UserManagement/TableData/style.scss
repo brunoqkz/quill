@@ -1,0 +1,143 @@
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 2rem;
+  border: 1px solid var(--quill-navy);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1.2rem;
+      color: var(--quill-grey);
+      background-color: var(--quill-navy);
+      border: 1px solid var(--quill-navy);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: var(--quill-dark-grey);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    }
+
+    span {
+      font-size: 1.2rem;
+      color: var(--quill-navy);
+    }
+
+    select {
+      padding: 0.5rem 1rem;
+      font-size: 1.2rem;
+      border: 1px solid var(--quill-navy);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background-color: var(--quill-white);
+      color: var(--quill-navy);
+
+      &:hover {
+        border-color: var(--quill-dark-grey);
+      }
+    }
+  }
+
+  .user-table {
+    width: 100%;
+    min-width: 800px;
+    border-collapse: collapse;
+    background-color: var(--quill-white);
+
+    th,
+    td {
+      padding: 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid var(--quill-navy);
+      font-size: 1.2rem;
+      white-space: nowrap;
+      border-right: 1px dashed var(--quill-navy);
+      text-align: center;
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+
+    thead {
+      display: table-header-group;
+    }
+
+    th {
+      background-color: var(--quill-grey);
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    tr {
+      display: table-row;
+
+      td {
+        .btn-info {
+          color: var(--quill-grey);
+          background-color: var(--quill-navy);
+          padding: 0.5rem 1.25rem;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+        }
+
+        .btn-edit {
+          color: var(--quill-navy);
+          background-color: var(--quill-gold);
+          padding: 0.5rem 1.25rem;
+          border: 1px solid var(--quill-navy);
+          border-radius: 0.5rem;
+          cursor: pointer;
+        }
+
+        .btn-delete {
+          color: var(--quill-grey);
+          background-color: var(--quill-burgundy);
+          padding: 0.5rem 1.25rem;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+        }
+      }
+    }
+
+    tr:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .sortable-column {
+    // display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  // Optional: Add responsiveness
+  @media (max-width: 600px) {
+    .pagination-controls {
+      flex-direction: column;
+      gap: 0.75rem;
+
+      button,
+      select {
+        width: 100%;
+      }
+    }
+  }
+}

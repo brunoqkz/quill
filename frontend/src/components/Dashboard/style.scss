@@ -1,3 +1,13 @@
 section {
   color: var(--quill-navy);
+
+  .user-management {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+    }
+  }
 }

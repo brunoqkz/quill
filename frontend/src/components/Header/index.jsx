@@ -12,9 +12,14 @@ function Header() {
     navigate("/");
   };
 
+  const handleLogoClick = () => {
+    if (user) navigate("/dashboard");
+    else navigate("/");
+  };
+
   return (
     <header className="flex flex-col md:flex-row justify-between items-center text-center text-2xl">
-      <div className="flex flex-1">
+      <div className="flex flex-1 cursor-pointer" onClick={handleLogoClick}>
         <img src={logo} alt="Ethereal Ink" />
       </div>
       <div className="flex flex-1 justify-center">
