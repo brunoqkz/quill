@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard";
 import NotFoundPage from "./components/NotFoundPage";
 import NewAuthorForm from "./components/NewAuthorForm";
 import UserManagement from "./components/UserManagement";
+import User from "./components/User";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/register-author" element={<NewAuthorForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<UserManagement />} />
+          <Route path="/users/:userId" element={<User />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

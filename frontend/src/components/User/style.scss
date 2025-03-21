@@ -1,0 +1,70 @@
+.user-data-container {
+  padding: 2rem;
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-back {
+    background-color: var(--quill-grey);
+    color: var(--quill-navy);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--quill-navy);
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+
+  .user-info {
+    margin-bottom: 1rem;
+  }
+
+  .user-field {
+    margin-bottom: 0.75rem;
+    strong {
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      margin-left: 0.5rem;
+      padding: 1rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid var(--quill-navy);
+    }
+
+    span {
+      margin-left: 0.5rem;
+    }
+  }
+
+  .user-actions {
+    margin-top: 1rem;
+  }
+
+  .btn-back,
+  .btn-edit,
+  .btn-delete,
+  .btn-update {
+    margin-right: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .btn-edit {
+    color: var(--quill-navy);
+    background-color: var(--quill-gold);
+    border: 1px solid var(--quill-navy);
+  }
+
+  .btn-delete {
+    background-color: var(--quill-burgundy);
+    color: var(--quill-grey);
+  }
+
+  .btn-update {
+    background-color: var(--quill-navy);
+    color: var(--quill-grey);
+  }
+}

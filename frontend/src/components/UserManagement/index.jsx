@@ -67,20 +67,26 @@ function UserManagement() {
       }
 
       const users = await response.json();
-      const formattedUsers = users.map((user) => ({
-        id: user.id,
-        user: {
-          firstName: user.name.split(" ")[0] || "N/A",
-          lastName: user.name.split(" ")[1] || "N/A",
-        },
-        email: user.email || "N/A",
-        role: roleMapping[user.role_id] || "N/A",
-        created_at:
-          formatDate(user.created_at) || new Date().toLocaleString("en-CA"),
-      }));
+      const formattedUsers = users.map((user) => {
+        const nameParts = user.name.split(" ");
+        const firstName = nameParts[0] || "N/A";
+        const lastName = nameParts.slice(1).join(" ") || "N/A";
+
+        return {
+          id: user.id,
+          user: {
+            firstName,
+            lastName,
+          },
+          email: user.email || "N/A",
+          role: roleMapping[user.role_id] || "N/A",
+          created_at:
+            formatDate(user.created_at) || new Date().toLocaleString("en-CA"),
+        };
+      });
 
       setData(formattedUsers);
-      setFilteredData(formattedUsers); // Set initial filtered data
+      setFilteredData(formattedUsers);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -146,7 +152,7 @@ function UserManagement() {
       cell: ({ row }) => (
         <button
           className="btn-info"
-          onClick={() => navigate(`/user-info/${row.original.id}`)}
+          onClick={() => navigate(`/users/${row.original.id}`)}
         >
           Info
         </button>
@@ -158,7 +164,11 @@ function UserManagement() {
       cell: ({ row }) => (
         <button
           className="btn-edit"
-          onClick={() => navigate(`/edit-user/${row.original.id}`)}
+          onClick={() =>
+            navigate(`/users/${row.original.id}`, {
+              state: { isEditing: true },
+            })
+          }
         >
           Edit
         </button>
@@ -241,7 +251,7 @@ function UserManagement() {
       )}
 
       <div className="actions">
-        <button className="btn-add-user" onClick={() => navigate("/add-user")}>
+        <button className="btn-add-user" onClick={() => navigate("/users")}>
           +
         </button>
       </div>
