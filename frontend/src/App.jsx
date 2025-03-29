@@ -6,6 +6,7 @@ import SignInForm from "./components/SignInForm";
 import Dashboard from "./components/Dashboard";
 import NotFoundPage from "./components/NotFoundPage";
 import NewAuthorForm from "./components/NewAuthorForm";
+import NewUserForm from "./components/NewUserForm";
 import UserManagement from "./components/UserManagement";
 import User from "./components/User";
 import { Routes, Route } from "react-router-dom";
@@ -21,6 +22,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<UserManagement />} />
           <Route path="/users/:userId" element={<User />} />
+          <Route path="/register/user" element={<NewUserForm />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
