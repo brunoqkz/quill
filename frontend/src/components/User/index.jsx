@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
+import { API_ENDPOINTS } from "../../utils/constants";
 import "./style.scss";
 
 /**
@@ -19,7 +20,7 @@ function User() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    role: 2,
+    role_id: 2,
   });
 
   // Fetch user data on component mount
@@ -27,27 +28,25 @@ function User() {
     // Fetch user data by ID
     const fetchUserData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/users/${userId}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(API_ENDPOINTS.USERS.GET_BY_ID(userId), {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch user data.");
         }
 
         const data = await response.json();
+
         setUserData(data);
         setFormData({
           name: data.name,
           email: data.email,
-          role: data.role_id,
+          role_id: data.role_id,
         });
       } catch (err) {
         console.error("Error fetching user data:", err);
@@ -69,17 +68,14 @@ function User() {
   // Handle update user request
   const handleUpdate = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/users/${userId}`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(API_ENDPOINTS.USERS.GET_BY_ID(userId), {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to update user data.");
@@ -106,16 +102,13 @@ function User() {
     );
     if (confirmation) {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/users/${userId}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(API_ENDPOINTS.USERS.GET_BY_ID(userId), {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to delete user.");
@@ -173,8 +166,8 @@ function User() {
           <strong>Role: </strong>
           {isEditing ? (
             <select
-              name="role"
-              value={formData.role}
+              name="role_id"
+              value={formData.role_id}
               onChange={handleInputChange}
             >
               <option value={1}>Admin</option>
@@ -183,9 +176,9 @@ function User() {
             </select>
           ) : (
             <span>
-              {userData.role === 1
+              {userData.role_id === 1
                 ? "Admin"
-                : userData.role === 2
+                : userData.role_id === 2
                 ? "Employee"
                 : "Author"}
             </span>
