@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./style.scss";
 import { FaSearch } from "react-icons/fa";
 import TableData from "./TableData";
+import { API_ENDPOINTS } from "../../utils/constants";
 
 /**
  * UserManagement component
@@ -51,7 +52,7 @@ function UserManagement() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:3000/api/users", {
+      const response = await fetch(API_ENDPOINTS.USERS.BASE, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -60,8 +61,9 @@ function UserManagement() {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
-          navigate("/");
+        // Redirect to Dashboard if user is not authorized
+        if (response.status === 403) {
+          navigate("/dashboard");
         }
         throw new Error("Failed to fetch users.");
       }
@@ -108,17 +110,7 @@ function UserManagement() {
     if (searchQuery === "") {
       setFilteredData(data); // If no search query, show all data
     } else {
-      const filtered = data.filter((row) => {
-        return (
-          row.user.firstName
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          row.user.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.role.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      });
-      setFilteredData(filtered);
+      setFilteredData(filterData(data, searchQuery));
     }
   }, [searchQuery, data]);
 
@@ -199,23 +191,27 @@ function UserManagement() {
     );
     if (confirmation) {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/users/${userId}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(API_ENDPOINTS.USERS.GET_BY_ID(userId), {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to delete user.");
         }
 
         alert("User deleted successfully.");
-        fetchUsers(); // Refresh the user list
+        // Remove deleted user from the data
+        const newData = [...data].filter((user) => user.id !== userId);
+        setData(newData);
+        if (searchQuery !== "") {
+          setFilteredData(filterData(newData, searchQuery));
+        } else {
+          setFilteredData(newData);
+        }
       } catch (err) {
         alert("Error deleting user: " + err.message);
       }
@@ -251,7 +247,10 @@ function UserManagement() {
       )}
 
       <div className="actions">
-        <button className="btn-add-user" onClick={() => navigate("/users")}>
+        <button
+          className="btn-add-user"
+          onClick={() => navigate("/register/user")}
+        >
           +
         </button>
       </div>
@@ -260,3 +259,21 @@ function UserManagement() {
 }
 
 export default UserManagement;
+
+/**
+ * Filter data based on search query
+ * @param {Array} data - Data to be filtered
+ * @param {string} searchQuery - Search query
+ * @return {Array} - Filtered data
+ */
+function filterData(data, searchQuery) {
+  const filtered = data.filter((row) => {
+    return (
+      row.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.user.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.role.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+  return filtered;
+}

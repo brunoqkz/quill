@@ -2,6 +2,7 @@ import "./style.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
+import { API_ENDPOINTS } from "../../utils/constants";
 
 /**
  * NewAuthorForm component
@@ -13,6 +14,7 @@ function NewAuthorForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -34,16 +36,13 @@ function NewAuthorForm() {
     };
 
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/auth/register/author",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(authorData),
-        }
-      );
+      const response = await fetch(API_ENDPOINTS.AUTH.SELF_REGISTER_AUTHOR, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(authorData),
+      });
 
       if (response.ok) {
         // Successful registration
@@ -80,6 +79,33 @@ function NewAuthorForm() {
     }
   };
 
+  /**
+   * Handle password change
+   * @param {Event} e
+   */
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    if (confirmPassword && e.target.value !== confirmPassword) {
+      setError("Passwords do not match.");
+    } else {
+      setError("");
+    }
+  };
+
+  /**
+   * Handle confirm password change
+   * Sets error message if passwords do not match
+   * @param {Event} e
+   */
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    if (e.target.value !== password) {
+      setError("Passwords do not match.");
+    } else {
+      setError("");
+    }
+  };
+
   return (
     <form className="flex justify-center" onSubmit={handleRegister}>
       <fieldset className="flex flex-col gap-2 border-1 rounded-lg">
@@ -105,11 +131,23 @@ function NewAuthorForm() {
           type="password"
           placeholder="Enter 8 characters or more"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
+          required
+        />
+        <label>Confirm Password</label>
+        <input
+          type="password"
+          placeholder="Re-enter password"
+          value={confirmPassword}
+          onChange={handleConfirmPasswordChange}
           required
         />
         <div className="actions flex gap-4">
-          <button type="submit" className="btn-register" disabled={loading}>
+          <button
+            type="submit"
+            className="btn-register"
+            disabled={loading || error}
+          >
             {loading ? "Registering..." : "Register"}
           </button>
           <button
