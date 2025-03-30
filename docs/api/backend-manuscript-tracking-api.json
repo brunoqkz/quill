@@ -1,0 +1,183 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Manuscript Tracking API",
+    "version": "1.0.0",
+    "description": "API for tracking the manuscript workflow in Quill."
+  },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/manuscripts": {
+      "get": {
+        "summary": "Get manuscripts for the authenticated user",
+        "description": "Returns manuscripts based on the user's role (author or employee).",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "List of manuscripts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Manuscript" }
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "500": { "description": "Internal server error." }
+        }
+      }
+    },
+    "/manuscripts/{id}": {
+      "get": {
+        "summary": "Get manuscript details",
+        "description": "Retrieves details of a specific manuscript.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manuscript details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Manuscript" }
+              }
+            }
+          },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "500": { "description": "Internal server error." }
+        }
+      }
+    },
+    "/manuscripts/{id}/comments": {
+      "get": {
+        "summary": "Get a manuscript comments",
+        "description": "Retrieves comments for a specific manuscript.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manuscript comments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Comment" }
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "500": { "description": "Internal server error." }
+        }
+      },
+      "post": {
+        "summary": "Add a comment to a manuscript",
+        "description": "Allows an authenticated user to comment on a manuscript step.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": { "type": "string" }
+                },
+                "required": ["content"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comment added successfully."
+          },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "500": { "description": "Internal server error." }
+        }
+      }
+    },
+    "/manuscripts/{id}/advance": {
+      "post": {
+        "summary": "Advance manuscript to the next workflow step",
+        "description": "Allows an employee to move a manuscript to the next workflow step.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manuscript advanced to the next step."
+          },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access Denied." },
+          "500": { "description": "Internal server error." }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Manuscript": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "author": { "type": "string" },
+          "current_step": { "type": "string" },
+          "status": { "type": "string" },
+          "assigned_department": { "type": "string" }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "content": { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "author": { "type": "string" }
+        }
+      }
+    }
+  }
+}
