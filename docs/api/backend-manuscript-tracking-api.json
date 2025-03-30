@@ -7,7 +7,7 @@
   },
   "security": [{ "bearerAuth": [] }],
   "paths": {
-    "/manuscripts": {
+    "/api/manuscripts": {
       "get": {
         "summary": "Get manuscripts for the authenticated user",
         "description": "Returns manuscripts based on the user's role (author or employee).",
@@ -30,7 +30,7 @@
         }
       }
     },
-    "/manuscripts/{id}": {
+    "/api/manuscripts/{id}": {
       "get": {
         "summary": "Get manuscript details",
         "description": "Retrieves details of a specific manuscript.",
@@ -58,7 +58,7 @@
         }
       }
     },
-    "/manuscripts/{id}/comments": {
+    "/api/manuscripts/{id}/comments": {
       "get": {
         "summary": "Get a manuscript comments",
         "description": "Retrieves comments for a specific manuscript.",
@@ -124,7 +124,7 @@
         }
       }
     },
-    "/manuscripts/{id}/advance": {
+    "/api/manuscripts/{id}/advance": {
       "post": {
         "summary": "Advance manuscript to the next workflow step",
         "description": "Allows an employee to move a manuscript to the next workflow step.",
