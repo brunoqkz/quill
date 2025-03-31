@@ -38,9 +38,7 @@ const validateManuscriptAccess = async (req, res, next) => {
     );
 
     if (!manuscript) {
-      return res
-        .status(404)
-        .json({ error: "Manuscript not found or access denied." });
+      return res.status(403).json({ error: "Access Denied." });
     }
 
     // Attach the manuscript to the request object for use in later middleware or routes
