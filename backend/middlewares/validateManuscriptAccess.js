@@ -1,3 +1,5 @@
+const pool = require("../db");
+
 /**
  * Middleware to validate manuscript access based on user role and manuscript ID.
  * Admin can access all manuscripts, authors can access their own manuscripts,
@@ -93,3 +95,5 @@ const authorizeManuscriptAccess = async (manuscriptId, userId, userRoleId) => {
     throw new Error("Database error");
   }
 };
+
+module.exports = { validateManuscriptAccess };
