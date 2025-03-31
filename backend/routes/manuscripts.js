@@ -109,7 +109,7 @@ router.get("/:id", validateManuscriptAccess, async (req, res) => {
 
     // If manuscript is not found
     if (!manuscript) {
-      return res.status(404).json({ error: "Manuscript not found." });
+      return res.status(403).json({ error: "Access Denied." });
     }
 
     return res.status(200).json(manuscript);
@@ -150,10 +150,10 @@ router.get("/:id/comments", validateManuscriptAccess, async (req, res) => {
       [manuscript.id]
     );
 
-    // If no comments are found, return a 404
+    // If no comments are found
     if (comments.length === 0) {
       return res
-        .status(404)
+        .status(204)
         .json({ error: "No comments found for this manuscript." });
     }
 
