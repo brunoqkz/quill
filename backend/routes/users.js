@@ -5,21 +5,9 @@
 
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql2/promise");
+const pool = require("../db");
 const { verifyToken } = require("../middlewares/authMiddleware");
 const firebaseAdmin = require("../firebase-admin");
-
-/**
- * MySQL connection pool for database operations
- * @type {mysql.Pool}
- */
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
 
 // Apply auth middleware to all routes
 router.use(verifyToken);
@@ -34,7 +22,7 @@ const isAdmin = async (uid) => {
   try {
     const [rows] = await pool.query(
       "SELECT role_id FROM users WHERE firebase_uid = ?",
-      [uid],
+      [uid]
     );
     return rows.length > 0 && rows[0].role_id === 1; // Assuming role_id=1 is admin
   } catch (error) {
@@ -77,7 +65,7 @@ router.get("/", async (req, res) => {
        FROM users 
        ORDER BY id 
        LIMIT ? OFFSET ?`,
-      [limit, offset],
+      [limit, offset]
     );
 
     res.status(200).json(users);
@@ -150,7 +138,7 @@ router.post("/", async (req, res) => {
       // Insert the user into MySQL
       const [result] = await connection.query(
         "INSERT INTO users (firebase_uid, name, email, role_id) VALUES (?, ?, ?, ?)",
-        [userRecord.uid, name, email, role_id],
+        [userRecord.uid, name, email, role_id]
       );
 
       // Commit the transaction
@@ -204,7 +192,7 @@ router.get("/:userId", async (req, res) => {
     // Check if user has permission (admin or the same user)
     const [currentUser] = await pool.query(
       "SELECT id FROM users WHERE firebase_uid = ?",
-      [req.user.uid],
+      [req.user.uid]
     );
 
     const isUserAdmin = await isAdmin(req.user.uid);
@@ -220,7 +208,7 @@ router.get("/:userId", async (req, res) => {
       `SELECT id, name, email, role_id, created_at 
        FROM users 
        WHERE id = ?`,
-      [userId],
+      [userId]
     );
 
     if (users.length === 0) {
@@ -234,7 +222,7 @@ router.get("/:userId", async (req, res) => {
       // Author
       const [authorInfo] = await pool.query(
         "SELECT bio, website FROM authors WHERE user_id = ?",
-        [userId],
+        [userId]
       );
 
       if (authorInfo.length > 0) {
@@ -247,7 +235,7 @@ router.get("/:userId", async (req, res) => {
          FROM employees e
          JOIN departments d ON e.department_id = d.id
          WHERE e.user_id = ?`,
-        [userId],
+        [userId]
       );
 
       if (employeeInfo.length > 0) {
@@ -300,7 +288,7 @@ router.patch("/:userId", async (req, res) => {
     // Check permissions (admin or same user)
     const [currentUser] = await pool.query(
       "SELECT id FROM users WHERE firebase_uid = ?",
-      [req.user.uid],
+      [req.user.uid]
     );
 
     const isUserAdmin = await isAdmin(req.user.uid);
@@ -319,7 +307,7 @@ router.patch("/:userId", async (req, res) => {
     // Get the current user firebase_uid
     const [userRows] = await pool.query(
       "SELECT firebase_uid FROM users WHERE id = ?",
-      [userId],
+      [userId]
     );
 
     if (userRows.length === 0) {
@@ -372,7 +360,7 @@ router.patch("/:userId", async (req, res) => {
         params.push(userId);
         await connection.query(
           `UPDATE users SET ${updates.join(", ")} WHERE id = ?`,
-          params,
+          params
         );
       }
 
@@ -422,7 +410,7 @@ router.delete("/:userId", async (req, res) => {
     // Get the Firebase UID
     const [userRows] = await pool.query(
       "SELECT firebase_uid, role_id FROM users WHERE id = ?",
-      [userId],
+      [userId]
     );
 
     if (userRows.length === 0) {

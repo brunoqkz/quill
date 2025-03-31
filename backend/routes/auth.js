@@ -1,17 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const firebaseAdmin = require("../firebase-admin");
-const mysql = require("mysql2/promise");
+const pool = require("../db");
 const { verifyToken } = require("../middlewares/authMiddleware");
-
-// MySQL connection pool
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
