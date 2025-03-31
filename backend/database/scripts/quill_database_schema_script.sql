@@ -59,7 +59,6 @@ CREATE TABLE `book_workflow` (
   `step_id` int NOT NULL,
   `assigned_department` int NOT NULL,
   `assigned_user` int DEFAULT NULL,
-  `status` varchar(255) DEFAULT 'pending',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `book_id` (`book_id`),
@@ -93,7 +92,7 @@ CREATE TABLE `books` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `author_id` int NOT NULL,
-  `status_id` int NOT NULL,
+  `description` TEXT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `author_id` (`author_id`),
@@ -383,7 +382,7 @@ CREATE TABLE `workflow_steps` (
 
 LOCK TABLES `workflow_steps` WRITE;
 /*!40000 ALTER TABLE `workflow_steps` DISABLE KEYS */;
-INSERT INTO `workflow_steps` VALUES (1,'submission'),(2,'review'),(3,'editing'),(4,'design'),(5,'typesetting'),(6,'proofreading'),(7,'publication');
+INSERT INTO `workflow_steps` VALUES (1,'submission'),(2,'review'),(3,'editing'),(4,'design'),(5,'typesetting'),(6,'proofreading'),(7,'publication'),(8,'cancelled');
 /*!40000 ALTER TABLE `workflow_steps` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
