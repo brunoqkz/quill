@@ -1,4 +1,4 @@
-const pool = require("../db");
+const dbPool = require("../database");
 
 /**
  * Middleware to validate manuscript access based on user role and manuscript ID.
@@ -15,7 +15,7 @@ const validateManuscriptAccess = async (req, res, next) => {
   try {
     // Get the user from the database
     const firebase_uid = req.user.uid;
-    const [currentUser] = await pool.query(
+    const [currentUser] = await dbPool.query(
       "SELECT id, role_id FROM users WHERE firebase_uid = ?",
       [firebase_uid]
     );
@@ -64,7 +64,7 @@ const validateManuscriptAccess = async (req, res, next) => {
  */
 const authorizeManuscriptAccess = async (manuscriptId, userId, userRoleId) => {
   try {
-    const [manuscripts] = await pool.query(
+    const [manuscripts] = await dbPool.query(
       `SELECT 
             b.id AS id, 
             u.id AS author_id, 

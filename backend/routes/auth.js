@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const firebaseAdmin = require("../firebase-admin");
-const pool = require("../db");
+const dbPool = require("../database");
 const { verifyToken } = require("../middlewares/authMiddleware");
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -30,7 +30,7 @@ router.post("/register/author", async (req, res) => {
 
   try {
     // Start a transaction
-    connection = await pool.getConnection();
+    connection = await dbPool.getConnection();
     await connection.beginTransaction();
 
     // Create user in Firebase
@@ -114,7 +114,7 @@ router.post("/register/employee", verifyToken, async (req, res) => {
     const registeredByUid = req.user.uid;
 
     // Get a connection from the pool
-    connection = await pool.getConnection();
+    connection = await dbPool.getConnection();
 
     // Query to check if the user is from HR department or has admin role
     const [result] = await connection.query(
