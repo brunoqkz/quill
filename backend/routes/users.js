@@ -5,7 +5,7 @@
 
 const express = require("express");
 const router = express.Router();
-const pool = require("../db");
+const dbPool = require("../database");
 const { verifyToken } = require("../middlewares/authMiddleware");
 const firebaseAdmin = require("../firebase-admin");
 
@@ -20,7 +20,7 @@ router.use(verifyToken);
  */
 const isAdmin = async (uid) => {
   try {
-    const [rows] = await pool.query(
+    const [rows] = await dbPool.query(
       "SELECT role_id FROM users WHERE firebase_uid = ?",
       [uid]
     );
@@ -60,7 +60,7 @@ router.get("/", async (req, res) => {
     const offset = (page - 1) * limit;
 
     // Get users with pagination
-    const [users] = await pool.query(
+    const [users] = await dbPool.query(
       `SELECT id, name, email, role_id, created_at 
        FROM users 
        ORDER BY id 
@@ -118,7 +118,7 @@ router.post("/", async (req, res) => {
     }
 
     // Start a transaction
-    const connection = await pool.getConnection();
+    const connection = await dbPool.getConnection();
     await connection.beginTransaction();
 
     let userRecord;
@@ -190,7 +190,7 @@ router.get("/:userId", async (req, res) => {
     const { userId } = req.params;
 
     // Check if user has permission (admin or the same user)
-    const [currentUser] = await pool.query(
+    const [currentUser] = await dbPool.query(
       "SELECT id FROM users WHERE firebase_uid = ?",
       [req.user.uid]
     );
@@ -204,7 +204,7 @@ router.get("/:userId", async (req, res) => {
     }
 
     // Get basic user info
-    const [users] = await pool.query(
+    const [users] = await dbPool.query(
       `SELECT id, name, email, role_id, created_at 
        FROM users 
        WHERE id = ?`,
@@ -220,7 +220,7 @@ router.get("/:userId", async (req, res) => {
     // Get role-specific information
     if (user.role_id === 3) {
       // Author
-      const [authorInfo] = await pool.query(
+      const [authorInfo] = await dbPool.query(
         "SELECT bio, website FROM authors WHERE user_id = ?",
         [userId]
       );
@@ -230,7 +230,7 @@ router.get("/:userId", async (req, res) => {
       }
     } else if (user.role_id === 2) {
       // Employee
-      const [employeeInfo] = await pool.query(
+      const [employeeInfo] = await dbPool.query(
         `SELECT d.name as department 
          FROM employees e
          JOIN departments d ON e.department_id = d.id
@@ -286,7 +286,7 @@ router.patch("/:userId", async (req, res) => {
     }
 
     // Check permissions (admin or same user)
-    const [currentUser] = await pool.query(
+    const [currentUser] = await dbPool.query(
       "SELECT id FROM users WHERE firebase_uid = ?",
       [req.user.uid]
     );
@@ -305,7 +305,7 @@ router.patch("/:userId", async (req, res) => {
     }
 
     // Get the current user firebase_uid
-    const [userRows] = await pool.query(
+    const [userRows] = await dbPool.query(
       "SELECT firebase_uid FROM users WHERE id = ?",
       [userId]
     );
@@ -317,7 +317,7 @@ router.patch("/:userId", async (req, res) => {
     const firebaseUid = userRows[0].firebase_uid;
 
     // Start transaction
-    const connection = await pool.getConnection();
+    const connection = await dbPool.getConnection();
     await connection.beginTransaction();
 
     try {
@@ -408,7 +408,7 @@ router.delete("/:userId", async (req, res) => {
     }
 
     // Get the Firebase UID
-    const [userRows] = await pool.query(
+    const [userRows] = await dbPool.query(
       "SELECT firebase_uid, role_id FROM users WHERE id = ?",
       [userId]
     );
@@ -421,7 +421,7 @@ router.delete("/:userId", async (req, res) => {
     const roleId = userRows[0].role_id;
 
     // Start transaction
-    const connection = await pool.getConnection();
+    const connection = await dbPool.getConnection();
     await connection.beginTransaction();
 
     try {
