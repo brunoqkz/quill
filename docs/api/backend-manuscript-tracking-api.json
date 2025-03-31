@@ -83,6 +83,7 @@
               }
             }
           },
+          "204": { "description": "No comments found for this manuscript." },
           "401": { "description": "Authentication required." },
           "403": { "description": "Access Denied." },
           "500": { "description": "Internal server error." }
@@ -118,6 +119,7 @@
           "201": {
             "description": "Comment added successfully."
           },
+          "400": { "description": "Invalid input." },
           "401": { "description": "Authentication required." },
           "403": { "description": "Access Denied." },
           "500": { "description": "Internal server error." }
@@ -141,6 +143,7 @@
           "200": {
             "description": "Manuscript advanced to the next step."
           },
+          "204": { "description": "No next step available to advance." },
           "401": { "description": "Authentication required." },
           "403": { "description": "Access Denied." },
           "500": { "description": "Internal server error." }
@@ -165,7 +168,6 @@
           "description": { "type": "string" },
           "author": { "type": "string" },
           "current_step": { "type": "string" },
-          "status": { "type": "string" },
           "assigned_department": { "type": "string" }
         }
       },
@@ -173,6 +175,7 @@
         "type": "object",
         "properties": {
           "id": { "type": "integer" },
+          "step_id": { "type": "integer" },
           "content": { "type": "string" },
           "created_at": { "type": "string", "format": "date-time" },
           "author": { "type": "string" }
