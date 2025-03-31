@@ -11,6 +11,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const blobRouter = require("./routes/blob");
 const authRouter = require("./routes/auth");
+const manuscriptsRouter = require("./routes/manuscripts");
 
 // Initialize Express app
 const app = express();
@@ -23,7 +24,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Enable CORS for localhost:5173
-app.use(cors());
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -34,6 +34,7 @@ app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 app.use("/blob", blobRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/manuscripts", manuscriptsRouter);
 
 // 404 error handler
 app.use((req, res, next) => {
