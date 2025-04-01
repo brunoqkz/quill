@@ -149,6 +149,32 @@
           "500": { "description": "Internal server error." }
         }
       }
+    },
+    "/api/manuscripts/{id}/cancel": {
+      "post": {
+        "summary": "Cancel manuscript",
+        "description": "Moves a manuscript to the canceled workflow step.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manuscript successfully moved to canceled step."
+          },
+          "400": {
+            "description": "Invalid request. Manuscript is already canceled."
+          },
+          "401": { "description": "Authentication required." },
+          "403": { "description": "Access denied." },
+          "500": { "description": "Internal server error." }
+        }
+      }
     }
   },
   "components": {
