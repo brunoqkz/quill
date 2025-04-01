@@ -41,17 +41,30 @@ router.get("/", async (req, res) => {
     if (currentUserRoleId === 1) {
       const [manuscripts] = await dbPool.query(
         `SELECT
-                b.id AS id, 
-                b.title AS title,
-                b.description AS description,
-                u.name AS author, 
-                bw.step_id AS current_step, 
-                bw.assigned_department AS assigned_department
-            FROM books b
-            INNER JOIN authors a ON a.id = b.author_id
-            INNER JOIN users u ON u.id = a.user_id
-            INNER JOIN book_workflow bw ON bw.book_id = b.id`
+            b.id AS id, 
+            b.title AS title,
+            b.description AS description,
+            u.name AS author, 
+            bw.step_id AS current_step, 
+            COALESCE(GROUP_CONCAT(DISTINCT d.id ORDER BY d.id SEPARATOR ', '), '') AS assigned_departments
+          FROM books b
+          INNER JOIN authors a ON a.id = b.author_id
+          INNER JOIN users u ON u.id = a.user_id
+          INNER JOIN book_workflow bw ON bw.book_id = b.id
+          LEFT JOIN department_workflow_steps dws ON dws.workflow_step_id = bw.step_id
+          LEFT JOIN departments d ON d.id = dws.department_id
+          GROUP BY b.id, b.title, b.description, u.name, bw.step_id`
       );
+      // If no manuscripts are found
+      if (manuscripts.length === 0) {
+        return res.status(204).end();
+      }
+      // Prepare the manuscripts for the response
+      manuscripts.forEach((manuscript) => {
+        manuscript.assigned_departments = manuscript.assigned_departments
+          ? manuscript.assigned_departments.split(",").map(Number)
+          : [];
+      });
       // TODO: Remove Debugging
       console.log(manuscripts);
       return res.status(200).json(manuscripts);
@@ -62,25 +75,37 @@ router.get("/", async (req, res) => {
     // Employees can see manuscripts assigned to their department
     const [manuscripts] = await dbPool.query(
       `SELECT 
-            b.id AS id, 
-            b.title AS title,
-            b.description AS description,
-            u.name AS author, 
-            bw.step_id AS current_step, 
-            bw.assigned_department AS assigned_department
+          b.id AS id, 
+          b.title AS title,
+          b.description AS description,
+          u.name AS author, 
+          bw.step_id AS current_step, 
+          COALESCE(GROUP_CONCAT(DISTINCT d.id ORDER BY d.id SEPARATOR ', '), '') AS assigned_departments
         FROM books b
         INNER JOIN authors a ON a.id = b.author_id
         INNER JOIN users u ON u.id = a.user_id
         INNER JOIN book_workflow bw ON bw.book_id = b.id
-        LEFT JOIN employees e ON e.department_id = bw.assigned_department
+        LEFT JOIN department_workflow_steps dws ON dws.workflow_step_id = bw.step_id
+        LEFT JOIN departments d ON d.id = dws.department_id
+        LEFT JOIN employees e ON e.department_id = d.id
         LEFT JOIN users ue ON ue.id = e.user_id
         WHERE 
-            (u.id = ? AND ? = 3) 
+          (u.id = ? AND ? = 3)
         OR 
-            (ue.id = ? AND ? = 2)`,
+          (ue.id = ? AND ? = 2)
+        GROUP BY b.id, b.title, b.description, u.name, bw.step_id`,
       [currentUserId, currentUserRoleId, currentUserId, currentUserRoleId]
     );
 
+    if (manuscripts.length === 0) {
+      return res.status(204).end();
+    }
+    // Prepare the manuscripts for the response
+    manuscripts.forEach((manuscript) => {
+      manuscript.assigned_departments = manuscript.assigned_departments
+        ? manuscript.assigned_departments.split(",").map(Number)
+        : [];
+    });
     // TODO: Remove Debugging
     console.log(manuscripts);
     return res.status(200).json(manuscripts);
