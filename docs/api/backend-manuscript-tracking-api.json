@@ -168,7 +168,10 @@
           "description": { "type": "string" },
           "author": { "type": "string" },
           "current_step": { "type": "string" },
-          "assigned_department": { "type": "string" }
+          "assigned_department": {
+            "type": "array",
+            "items": { "type": "integer" }
+          }
         }
       },
       "Comment": {
