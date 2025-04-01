@@ -66,13 +66,12 @@ const authorizeManuscriptAccess = async (manuscriptId, userId, userRoleId) => {
       `SELECT 
             b.id AS id, 
             u.id AS author_id, 
-            bw.step_id AS current_step,
+            b.step_id AS current_step,
             COALESCE(GROUP_CONCAT(DISTINCT d.id ORDER BY d.id SEPARATOR ', '), '') AS assigned_departments
         FROM books b
         INNER JOIN authors a ON a.id = b.author_id
         INNER JOIN users u ON u.id = a.user_id
-        INNER JOIN book_workflow bw ON bw.book_id = b.id
-        LEFT JOIN department_workflow_steps dws ON dws.workflow_step_id = bw.step_id
+        LEFT JOIN department_workflow_steps dws ON dws.workflow_step_id = b.step_id
         LEFT JOIN departments d ON d.id = dws.department_id
         LEFT JOIN employees e ON e.department_id = d.id
         LEFT JOIN users ue ON ue.id = e.user_id
