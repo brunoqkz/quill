@@ -66,13 +66,15 @@ const authorizeManuscriptAccess = async (manuscriptId, userId, userRoleId) => {
       `SELECT 
             b.id AS id, 
             u.id AS author_id, 
-            bw.step_id AS current_step, 
-            bw.assigned_department AS assigned_department
+            bw.step_id AS current_step,
+            COALESCE(GROUP_CONCAT(DISTINCT d.id ORDER BY d.id SEPARATOR ', '), '') AS assigned_departments
         FROM books b
         INNER JOIN authors a ON a.id = b.author_id
         INNER JOIN users u ON u.id = a.user_id
         INNER JOIN book_workflow bw ON bw.book_id = b.id
-        LEFT JOIN employees e ON e.department_id = bw.assigned_department
+        LEFT JOIN department_workflow_steps dws ON dws.workflow_step_id = bw.step_id
+        LEFT JOIN departments d ON d.id = dws.department_id
+        LEFT JOIN employees e ON e.department_id = d.id
         LEFT JOIN users ue ON ue.id = e.user_id
         WHERE 
             b.id = ? 
@@ -82,12 +84,23 @@ const authorizeManuscriptAccess = async (manuscriptId, userId, userRoleId) => {
             OR 
                 (u.id = ? AND ? = 3) -- Author can access own manuscripts
             OR 
-                (ue.id = ? AND ? = 2) -- Department members can access assigned manuscripts
-            )`,
+                (ue.id = ? AND ? = 2) -- Department members can access manuscripts in their workflow step
+            )
+        GROUP BY b.id, u.id, bw.step_id`,
       [manuscriptId, userRoleId, userId, userRoleId, userId, userRoleId]
     );
 
-    return manuscripts.length > 0 ? manuscripts[0] : null;
+    if (manuscripts.length === 0) {
+      return null;
+    }
+
+    // Prepare the manuscript object
+    const manuscript = manuscripts[0];
+    // Prepare the assigned departments as an array of numbers
+    manuscript.assigned_departments = manuscript.assigned_departments
+      ? manuscript.assigned_departments.split(", ").map(Number)
+      : [];
+    return manuscripts;
   } catch (error) {
     console.error("Error validating user permission:", error);
     throw new Error("Database error");

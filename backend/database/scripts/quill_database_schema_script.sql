@@ -57,18 +57,12 @@ CREATE TABLE `book_workflow` (
   `id` int NOT NULL AUTO_INCREMENT,
   `book_id` int NOT NULL,
   `step_id` int NOT NULL,
-  `assigned_department` int NOT NULL,
-  `assigned_user` int DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `book_id` (`book_id`),
   KEY `step_id` (`step_id`),
-  KEY `assigned_department` (`assigned_department`),
-  KEY `assigned_user` (`assigned_user`),
   CONSTRAINT `book_workflow_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `book_workflow_ibfk_2` FOREIGN KEY (`step_id`) REFERENCES `workflow_steps` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `book_workflow_ibfk_3` FOREIGN KEY (`assigned_department`) REFERENCES `departments` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `book_workflow_ibfk_4` FOREIGN KEY (`assigned_user`) REFERENCES `employees` (`id`) ON DELETE SET NULL
+  CONSTRAINT `book_workflow_ibfk_2` FOREIGN KEY (`step_id`) REFERENCES `workflow_steps` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -92,7 +86,7 @@ CREATE TABLE `books` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `author_id` int NOT NULL,
-  `description` TEXT NULL,
+  `description` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `author_id` (`author_id`),
@@ -140,6 +134,35 @@ CREATE TABLE `comments` (
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `department_workflow_steps`
+--
+
+DROP TABLE IF EXISTS `department_workflow_steps`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `department_workflow_steps` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `department_id` int NOT NULL,
+  `workflow_step_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `department_id` (`department_id`),
+  KEY `step_id` (`workflow_step_id`),
+  CONSTRAINT `department_workflow_steps_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `department_workflow_steps_ibfk_2` FOREIGN KEY (`workflow_step_id`) REFERENCES `workflow_steps` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `department_workflow_steps`
+--
+
+LOCK TABLES `department_workflow_steps` WRITE;
+/*!40000 ALTER TABLE `department_workflow_steps` DISABLE KEYS */;
+INSERT INTO `department_workflow_steps` VALUES (1,8,1),(2,1,1),(3,9,1),(4,1,2),(5,9,2),(6,1,3),(7,3,3),(8,2,4),(9,5,4),(10,4,5),(11,3,6),(12,1,6),(13,6,7),(14,5,7),(15,7,7),(16,9,8),(17,7,8);
+/*!40000 ALTER TABLE `department_workflow_steps` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -320,7 +343,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -329,7 +352,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'vf2RxPy6JgZ8qFhxqzzI293ug8D3','John Doe','john@example.com',3,'2025-03-16 01:10:53');
+INSERT INTO `users` VALUES (1,'vf2RxPy6JgZ8qFhxqzzI293ug8D3','John Doe','john@example.com',3,'2025-03-16 01:10:53'),(2,'LIrlXwQAMEVhbpQjlgXLpjFtj733','Diego Bastos','bastosdiegol@gmail.com',1,'2025-04-01 00:55:15');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -373,7 +396,7 @@ CREATE TABLE `workflow_steps` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -395,4 +418,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-16  2:14:41
+-- Dump completed on 2025-03-31 23:43:14
