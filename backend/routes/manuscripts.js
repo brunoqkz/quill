@@ -276,4 +276,53 @@ router.post("/:id/advance", validateManuscriptAccess, async (req, res) => {
   }
 });
 
+/**
+ * Moves the manuscript to the cancelled workflow step.
+ *
+ * @name POST /manuscripts/:id/cancel
+ * @function
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {string} req.params.id - The manuscript ID.
+ * @returns {Object} - The response object containing the status of the operation.
+ * * @returns {number} res.status - The HTTP status code.
+ */
+router.post("/:id/cancel", validateManuscriptAccess, async (req, res) => {
+  try {
+    // Get Request Parameters
+    const manuscript = req.manuscript;
+
+    // Fetch the ID of the "cancelled" step from the database
+    const [rows] = await dbPool.query(
+      "SELECT id FROM workflow_steps WHERE name = 'cancelled' LIMIT 1"
+    );
+    if (rows.length === 0) {
+      console.error("Cancelled step not found in the database.");
+      return res.status(500).json({ message: "Internal server error." });
+    }
+    const cancelledStepId = rows[0].id;
+
+    // Check if the manuscript is already cancelled
+    if (manuscript.current_step === cancelledStepId) {
+      return res
+        .status(400)
+        .json({ message: "Invalid request. Manuscript is already canceled." });
+    }
+
+    // Update the manuscript's current step to the cancelled step in the database
+    await dbPool.query("UPDATE books SET current_step = ? WHERE id = ?", [
+      cancelledStepId,
+      manuscript.id,
+    ]);
+
+    return res
+      .status(200)
+      .json({ message: "Manuscript successfully moved to canceled step." });
+  } catch (err) {
+    console.error("Error cancelling manuscript:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 module.exports = router;
