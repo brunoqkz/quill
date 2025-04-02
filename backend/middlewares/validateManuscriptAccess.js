@@ -62,6 +62,10 @@ const validateManuscriptAccess = async (req, res, next) => {
  */
 const authorizeManuscriptAccess = async (manuscriptId, userId, userRoleId) => {
   try {
+    // Get role IDs from the database
+    const roleIds = await getRoleIds();
+    const { admin, author, employee } = roleIds;
+
     const [manuscripts] = await dbPool.query(
       `SELECT 
             b.id AS id, 
@@ -79,14 +83,24 @@ const authorizeManuscriptAccess = async (manuscriptId, userId, userRoleId) => {
             b.id = ? 
         AND 
             (
-                ? = 1 -- Admin can access everything
+                ? = ? -- Admin can access everything
             OR 
-                (u.id = ? AND ? = 3) -- Author can access own manuscripts
+                (u.id = ? AND ? = ?) -- Author can access own manuscripts
             OR 
-                (ue.id = ? AND ? = 2) -- Department members can access manuscripts in their workflow step
+                (ue.id = ? AND ? = ?) -- Employees can access manuscripts in their workflow step
             )
-        GROUP BY b.id, u.id, bw.step_id`,
-      [manuscriptId, userRoleId, userId, userRoleId, userId, userRoleId]
+        GROUP BY b.id, u.id, b.step_id`,
+      [
+        manuscriptId,
+        userRoleId,
+        admin,
+        userId,
+        userRoleId,
+        author,
+        userId,
+        userRoleId,
+        employee,
+      ]
     );
 
     if (manuscripts.length === 0) {
@@ -99,11 +113,45 @@ const authorizeManuscriptAccess = async (manuscriptId, userId, userRoleId) => {
     manuscript.assigned_departments = manuscript.assigned_departments
       ? manuscript.assigned_departments.split(", ").map(Number)
       : [];
-    return manuscripts;
+    return manuscript;
   } catch (error) {
     console.error("Error validating user permission:", error);
     throw new Error("Database error");
   }
 };
 
-module.exports = { validateManuscriptAccess };
+/**
+ * Fetch role IDs from the database and validate required roles.
+ * This function retrieves role IDs for admin, author, and employee roles.
+ * If any required roles are missing, it throws an error.
+ *
+ * @returns {object} - An object containing role IDs.
+ * @throws {Error} - Throws an error if any required roles are missing.
+ * @throws {Error} - Throws an error if there is a database error.
+ */
+const getRoleIds = async () => {
+  try {
+    const [roles] = await dbPool.query("SELECT id, name FROM roles");
+
+    const roleIds = roles.reduce((acc, role) => {
+      acc[role.name] = role.id;
+      return acc;
+    }, {});
+
+    const requiredRoles = ["admin", "author", "employee"];
+
+    // Check if all required roles exist
+    const missingRoles = requiredRoles.filter((role) => !(role in roleIds));
+    if (missingRoles.length > 0) {
+      console.error(`Missing required roles: ${missingRoles.join(", ")}`);
+      throw new Error(`Missing required roles`);
+    }
+
+    return roleIds;
+  } catch (error) {
+    console.error("Error fetching role IDs:", error);
+    throw new Error("Database error");
+  }
+};
+
+module.exports = { validateManuscriptAccess, getRoleIds };

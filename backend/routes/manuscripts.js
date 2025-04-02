@@ -4,7 +4,9 @@ const dbPool = require("../database");
 const { verifyToken } = require("../middlewares/authMiddleware");
 const {
   validateManuscriptAccess,
+  getRoleIds,
 } = require("../middlewares/validateManuscriptAccess");
+const sanitizeHtml = require("sanitize-html");
 
 // Apply auth middleware to all routes
 router.use(verifyToken);
@@ -27,7 +29,7 @@ router.get("/", async (req, res) => {
     // Get the user from the database
     const firebase_uid = req.user.uid;
     const [currentUser] = await dbPool.query(
-      "SELECT role_id FROM users WHERE firebase_uid = ?",
+      "SELECT id, role_id FROM users WHERE firebase_uid = ?",
       [firebase_uid]
     );
     // Check if the user exists
@@ -37,8 +39,12 @@ router.get("/", async (req, res) => {
     const currentUserId = currentUser[0].id;
     const currentUserRoleId = currentUser[0].role_id;
 
+    // Get role IDs from the database
+    const roleIds = await getRoleIds();
+    const { admin, author, employee } = roleIds;
+
     // If the user is an admin, fetch all manuscripts
-    if (currentUserRoleId === 1) {
+    if (currentUserRoleId === admin) {
       const [manuscripts] = await dbPool.query(
         `SELECT
             b.id AS id, 
@@ -64,8 +70,6 @@ router.get("/", async (req, res) => {
           ? manuscript.assigned_departments.split(",").map(Number)
           : [];
       });
-      // TODO: Remove Debugging
-      console.log(manuscripts);
       return res.status(200).json(manuscripts);
     }
 
@@ -88,12 +92,50 @@ router.get("/", async (req, res) => {
         LEFT JOIN employees e ON e.department_id = d.id
         LEFT JOIN users ue ON ue.id = e.user_id
         WHERE 
-          (u.id = ? AND ? = 3)
+          (u.id = ? AND ? = ?)
         OR 
-          (ue.id = ? AND ? = 2)
+          (ue.id = ? AND ? = ?)
         GROUP BY b.id, b.title, b.description, u.name, b.step_id`,
-      [currentUserId, currentUserRoleId, currentUserId, currentUserRoleId]
+      [
+        currentUserId,
+        currentUserRoleId,
+        author,
+        currentUserId,
+        currentUserRoleId,
+        employee,
+      ]
     );
+
+    // Log the query for debugging purposes
+    console.log("Query:", {
+      sql: `SELECT
+          b.id AS id,
+          b.title AS title,
+          b.description AS description,
+          u.name AS author,
+          b.step_id AS current_step,
+          COALESCE(GROUP_CONCAT(DISTINCT d.id ORDER BY d.id SEPARATOR ', '), '') AS assigned_departments
+        FROM books b        
+        INNER JOIN authors a ON a.id = b.author_id
+        INNER JOIN users u ON u.id = a.user_id
+        LEFT JOIN department_workflow_steps dws ON dws.workflow_step_id = b.step_id
+        LEFT JOIN departments d ON d.id = dws.department_id
+        LEFT JOIN employees e ON e.department_id = d.id
+        LEFT JOIN users ue ON ue.id = e.user_id
+        WHERE
+          (u.id = ? AND ? = ?)
+        OR
+          (ue.id = ? AND ? = ?)
+        GROUP BY b.id, b.title, b.description, u.name, b.step_id`,
+      params: [
+        currentUserId,
+        currentUserRoleId,
+        author,
+        currentUserId,
+        currentUserRoleId,
+        employee,
+      ],
+    });
 
     if (manuscripts.length === 0) {
       return res.status(204).end();
@@ -173,6 +215,16 @@ router.get("/:id/comments", validateManuscriptAccess, async (req, res) => {
       [manuscript.id]
     );
 
+    // Log the query for debugging purposes
+    console.log("Query:", {
+      sql: `SELECT c.id, c.step_id, c.content, c.created_at, u.name AS author
+          FROM comments c
+          INNER JOIN users u ON u.id = c.user_id
+          WHERE c.book_id = ?
+          ORDER BY c.created_at DESC`,
+      params: [manuscript.id],
+    });
+
     // If no comments are found
     if (comments.length === 0) {
       return res
@@ -219,11 +271,23 @@ router.post("/:id/comments", validateManuscriptAccess, async (req, res) => {
       return res.status(400).json({ error: "Invalid input." });
     }
 
+    // Sanitize the content
+    const sanitizedContent = sanitizeHtml(content, {
+      allowedTags: [], // No HTML tags allowed
+      allowedAttributes: {}, // No attributes allowed
+      disallowedTagsMode: "discard",
+      textFilter: (text) => text.trim(), // Remove extra spaces
+    });
+
+    if (sanitizedContent.length === 0) {
+      return res.status(400).json({ error: "Invalid input." });
+    }
+
     // Insert the comment into the database
     const [result] = await dbPool.query(
       `INSERT INTO comments (book_id, user_id, step_id, content) 
          VALUES (?, ?, ?, ?)`,
-      [manuscript.id, userId, manuscript.current_step, content]
+      [manuscript.id, userId, manuscript.current_step, sanitizedContent]
     );
     // Check if the insert was successful
     if (result.affectedRows === 0) {
@@ -265,7 +329,7 @@ router.post("/:id/advance", validateManuscriptAccess, async (req, res) => {
     const newStepId = nextStep[0].next_step_id;
 
     // Update the manuscript's current step in the database
-    await dbPool.query("UPDATE books SET current_step = ? WHERE id = ?", [
+    await dbPool.query("UPDATE books SET step_id = ? WHERE id = ?", [
       newStepId,
       manuscript.id,
     ]);
@@ -311,7 +375,7 @@ router.post("/:id/cancel", validateManuscriptAccess, async (req, res) => {
     }
 
     // Update the manuscript's current step to the cancelled step in the database
-    await dbPool.query("UPDATE books SET current_step = ? WHERE id = ?", [
+    await dbPool.query("UPDATE books SET step_id = ? WHERE id = ?", [
       cancelledStepId,
       manuscript.id,
     ]);
