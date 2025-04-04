@@ -23,11 +23,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Enable CORS for localhost:5173
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(",")
+  : "http://localhost:5173";
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
-  })
+    origin: allowedOrigins,
+  }),
 );
 
 app.use("/", indexRouter);
