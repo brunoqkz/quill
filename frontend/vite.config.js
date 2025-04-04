@@ -16,4 +16,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ["@tanstack/react-table"],
   },
+  preview: {
+    allowedHosts: ["localhost", "quill.brunoqkz.dev"],
+  },
 });

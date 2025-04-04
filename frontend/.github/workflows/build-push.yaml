@@ -3,6 +3,8 @@ name: Frontend Build and Push
 on:
   push:
     branches: [main]
+    paths:
+      - "frontend/**"
   workflow_dispatch:
 
 env:
@@ -56,3 +58,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # Add a predictable sha tag for main branch
+      - name: Tag sha for main branch
+        if: github.ref == 'refs/heads/main'
+        run: |
+          COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          echo "Tagged as sha-$COMMIT_SHA for deployment tracking"
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA

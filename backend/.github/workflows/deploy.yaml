@@ -1,4 +1,4 @@
-name: Deploy
+name: Backend Deploy
 
 on:
   workflow_run:
@@ -34,9 +34,19 @@ jobs:
             echo "IMAGE_TAG=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
           fi
 
-      - name: Deploy example (placeholder)
-        run: |
-          echo "Deploying image: ghcr.io/${{ github.repository }}:${{ env.IMAGE_TAG }}"
-          echo "This is a placeholder for our actual deployment commands"
-          # For example:
-          # ssh user@some-azure-server "docker pull ghcr.io/${{ github.repository }}-backend:${{ env.IMAGE_TAG }} && docker-compose up -d"
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          script: |
+            cd /opt/quill
+            if grep -q "BACKEND_IMAGE_TAG=" .env; then
+              sed -i "s/BACKEND_IMAGE_TAG=.*/BACKEND_IMAGE_TAG=${IMAGE_TAG}/" .env
+            else
+              echo "BACKEND_IMAGE_TAG=${IMAGE_TAG}" >> .env
+            fi
+            docker compose pull backend
+            docker compose up -d backend
+            docker system prune -f
