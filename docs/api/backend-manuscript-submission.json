@@ -1,0 +1,229 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Ethereal Ink Manuscript Submission API",
+    "version": "1.0.0",
+    "description": "API for submitting and tracking manuscripts in the Ethereal Ink publishing system."
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/manuscripts": {
+      "post": {
+        "summary": "Submit a new manuscript",
+        "description": "Creates a new manuscript entry in the submission workflow",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "The Great Novel"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A story about adventure and discovery"
+                  }
+                },
+                "required": ["title", "description"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Manuscript submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input."
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Access Denied."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "get": {
+        "summary": "Get manuscripts for the authenticated user",
+        "description": "Returns manuscripts based on the user's role (author or employee).",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of manuscripts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Manuscript"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No manuscripts found"
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "403": {
+            "description": "Access Denied."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/manuscripts/{id}/versions": {
+      "post": {
+        "summary": "Upload a manuscript version",
+        "description": "Uploads a new version of a manuscript file (PDF) to the system",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the manuscript to upload a version for"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File to upload (PDF format for manuscripts)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "fileName": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No file uploaded"
+          },
+          "401": {
+            "description": "Authentication required."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Manuscript": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "title": {
+            "type": "string",
+            "example": "The Great Novel"
+          },
+          "description": {
+            "type": "string",
+            "example": "A story about adventure and discovery"
+          },
+          "author": {
+            "type": "string",
+            "example": "Anthony Joseph Armstrong"
+          },
+          "current_step": {
+            "type": "integer",
+            "example": 1
+          },
+          "assigned_departments": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "example": [1, 8, 9]
+          }
+        }
+      }
+    }
+  }
+}
