@@ -98,12 +98,14 @@ function UserManagement() {
 
   // Redirect to login page if user is not logged in
   useEffect(() => {
-    if (!token) {
+    const isAuthenticated = token && isTokenValid();
+    if (!isAuthenticated) {
       navigate("/");
-    } else {
-      fetchUsers();
     }
-  }, [token, user, navigate]);
+  }, [token, isTokenValid, navigate]);
+  if (!user || !token) {
+    return null;
+  }
 
   // Filter data based on search query
   useEffect(() => {
