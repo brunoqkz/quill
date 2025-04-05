@@ -9,7 +9,6 @@ const cors = require("cors");
 // Import routes
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
-const blobRouter = require("./routes/blob");
 const authRouter = require("./routes/auth");
 const manuscriptsRouter = require("./routes/manuscripts");
 
@@ -27,12 +26,12 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
     origin: "http://localhost:5173",
-  })
+  }),
 );
 
+// Routes
 app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
-app.use("/blob", blobRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/manuscripts", manuscriptsRouter);
 
