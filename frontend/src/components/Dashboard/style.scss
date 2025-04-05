@@ -1,8 +1,18 @@
 section {
-  padding: 5rem;
+  padding: 2rem;
 
   h1 {
     font-size: 4rem;
     color: var(--quill-navy);
+  }
+
+  .content {
+    .center {
+      flex: 2;
+    }
+
+    .right {
+      flex: 1;
+    }
   }
 }
