@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
  * @returns {JSX.Element}
  */
 function Dashboard() {
-  const { user, token } = useAuth();
+  const { user, token, isTokenValid } = useAuth();
 
   const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ function Dashboard() {
    * Redirect to login page if user is not logged in
    */
   useEffect(() => {
-    if (!token) {
+    if (!isTokenValid()) {
       navigate("/");
     }
   }, [token, user, navigate]);
@@ -27,8 +27,8 @@ function Dashboard() {
     <section>
       <h1 className="font-bold">Dashboard</h1>
       <p>
-        <span className="font-bold">{user && user.displayName}</span>, welcome
-        to the dashboard!
+        <span className="font-bold">{user && user.name}</span>, welcome to the
+        dashboard!
       </p>
       <div className="user-management">
         <button
