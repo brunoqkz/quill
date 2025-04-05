@@ -17,11 +17,11 @@ function NewUserForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, token } = useAuth();
+  const { user, token, isTokenValid } = useAuth();
 
   // Redirect to login page if user is not logged in
   useEffect(() => {
-    if (!token) {
+    if (!isTokenValid()) {
       navigate("/");
     }
   }, [token, user, navigate]);
