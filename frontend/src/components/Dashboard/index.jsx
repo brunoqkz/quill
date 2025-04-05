@@ -2,6 +2,7 @@ import "./style.scss";
 import { useAuth } from "../AuthProvider";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Manuscripts from "./Manuscripts";
 
 // TODO: Implement dashboard component functionalities
 
@@ -18,26 +19,20 @@ function Dashboard() {
    * Redirect to login page if user is not logged in
    */
   useEffect(() => {
-    if (!isTokenValid()) {
+    const isAuthenticated = token && isTokenValid();
+    if (!isAuthenticated) {
       navigate("/");
     }
-  }, [token, user, navigate]);
+  }, [token, isTokenValid, navigate]);
+
+  if (!user || !token) {
+    return null;
+  }
 
   return (
     <section>
-      <h1 className="font-bold">Dashboard</h1>
-      <p>
-        <span className="font-bold">{user && user.name}</span>, welcome to the
-        dashboard!
-      </p>
-      <div className="user-management">
-        <button
-          className="bg-blue-500 text-white rounded"
-          onClick={() => navigate("/users")}
-        >
-          Go to User Management
-        </button>
-      </div>
+      <h1>Welcome back, {user && user.name.split(" ")[0]}!</h1>
+      <Manuscripts />
     </section>
   );
 }

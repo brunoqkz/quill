@@ -25,10 +25,14 @@ function User() {
 
   // Redirect to login page if user is not logged in
   useEffect(() => {
-    if (!isTokenValid()) {
+    const isAuthenticated = token && isTokenValid();
+    if (!isAuthenticated) {
       navigate("/");
     }
-  }, [token, user, navigate]);
+  }, [token, isTokenValid, navigate]);
+  if (!user || !token) {
+    return null;
+  }
 
   // Fetch user data on component mount
   useEffect(() => {
