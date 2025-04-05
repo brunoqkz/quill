@@ -10,6 +10,17 @@ const API_ENDPOINTS = {
     BASE: `${API_BASE_URL}/api/users`,
     GET_BY_ID: (userId) => `${API_BASE_URL}/api/users/${userId}`,
   },
+  MANUSCRIPTS: {
+    BASE: `${API_BASE_URL}/api/manuscripts`,
+    GET_BY_ID: (manuscriptId) =>
+      `${API_BASE_URL}/api/manuscripts/${manuscriptId}`,
+    ADVANCE: (manuscriptId) =>
+      `${API_BASE_URL}/api/manuscripts/${manuscriptId}/advance`,
+    CANCEL: (manuscriptId) =>
+      `${API_BASE_URL}/api/manuscripts/${manuscriptId}/cancel`,
+    COMMENTS: (manuscriptId) =>
+      `${API_BASE_URL}/api/manuscripts/${manuscriptId}/comments`,
+  },
 };
 
 const QUILL_ROLES = {
