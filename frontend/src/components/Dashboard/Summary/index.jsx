@@ -1,22 +1,22 @@
 import "./style.scss";
 import { useAuth } from "../../AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import {
-  API_ENDPOINTS,
-  QUILL_ROLES,
-  MANUSCRIPT_STAGES,
-} from "../../../utils/constants";
+import { useEffect } from "react";
+import { QUILL_ROLES, MANUSCRIPT_STAGES } from "../../../utils/constants";
 import { GoBook } from "react-icons/go";
 import { TfiComments } from "react-icons/tfi";
 import { MdOutlineCancel } from "react-icons/md";
 
 /**
- * Dashboard component
+ * Summary component
+ *
+ * @component
+ * @description This component displays a summary of manuscripts based on the user's role.
+ * @param {object} manuscripts - Array of manuscripts
  * @returns {JSX.Element}
  */
 function Summary({ manuscripts }) {
-  const { user, token, isTokenValid } = useAuth();
+  const { user, isTokenValid } = useAuth();
 
   const navigate = useNavigate();
 
@@ -26,12 +26,20 @@ function Summary({ manuscripts }) {
     }
   }, []);
 
+  /**
+   * Get total number of comments across all manuscripts   *
+   * @returns {number} Total number of comments across all manuscripts
+   */
   function getTotalManuscriptsCommentsCount() {
     return manuscripts.reduce((total, manuscript) => {
       return total + manuscript.comments.length;
     }, 0);
   }
 
+  /**
+   * Get the count of manuscripts in each stage
+   * @returns {object} Count of manuscripts in each stage
+   */
   function getManuscriptCountByStage() {
     const countByStage = {};
 
@@ -58,11 +66,19 @@ function Summary({ manuscripts }) {
     );
   }
 
+  /**
+   * Get the count of active manuscripts (not cancelled)
+   * @return {number} Count of active manuscripts
+   */
   function getActiveManuscriptsCount() {
     return manuscripts.filter((manuscript) => manuscript.current_step !== 8)
       .length;
   }
 
+  /**
+   * Get the count of cancelled manuscripts
+   * @return {number} Count of cancelled manuscripts
+   */
   function getCancelledManuscriptsCount() {
     return manuscripts.filter((manuscript) => manuscript.current_step === 8)
       .length;
