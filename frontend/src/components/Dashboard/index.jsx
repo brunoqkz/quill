@@ -8,6 +8,8 @@ import Summary from "./Summary";
 
 /**
  * Dashboard component
+ *
+ * @component
  * @returns {JSX.Element}
  */
 function Dashboard() {
@@ -32,7 +34,10 @@ function Dashboard() {
     return null;
   }
 
-  // Fetch manuscripts from the API
+  /**
+   * Fetch manuscripts from the API
+   * @returns {Promise<void>}
+   */
   const fetchManuscripts = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.MANUSCRIPTS.BASE, {
@@ -64,7 +69,11 @@ function Dashboard() {
     }
   };
 
-  // Fetch comments for a specific manuscript
+  /**
+   * Fetch comments for a specific manuscript
+   * @param {string} manuscriptId - The ID of the manuscript
+   * @returns {Promise<Array>} - The comments for the manuscript
+   */
   const fetchComments = async (manuscriptId) => {
     try {
       const response = await fetch(
