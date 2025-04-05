@@ -7,9 +7,26 @@ const {
   getRoleIds,
 } = require("../middlewares/validateManuscriptAccess");
 const sanitizeHtml = require("sanitize-html");
+const multer = require("multer");
+const { BlobServiceClient } = require("@azure/storage-blob");
+
+const MANUSCRIPT_MAX_FILE_SIZE_10MB = 10 * 1024 * 1024;
 
 // Apply auth middleware to all routes
 router.use(verifyToken);
+
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: MANUSCRIPT_MAX_FILE_SIZE_10MB },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype !== "application/pdf") {
+      cb(new Error("Only PDF files are allowed."), false);
+    } else {
+      cb(null, true);
+    }
+  },
+});
 
 /**
  * Get all manuscripts for the logged-in user.
@@ -30,7 +47,7 @@ router.get("/", async (req, res) => {
     const firebase_uid = req.user.uid;
     const [currentUser] = await dbPool.query(
       "SELECT id, role_id FROM users WHERE firebase_uid = ?",
-      [firebase_uid]
+      [firebase_uid],
     );
     // Check if the user exists
     if (currentUser.length === 0) {
@@ -58,7 +75,7 @@ router.get("/", async (req, res) => {
           INNER JOIN users u ON u.id = a.user_id
           LEFT JOIN department_workflow_steps dws ON dws.workflow_step_id = b.step_id
           LEFT JOIN departments d ON d.id = dws.department_id
-          GROUP BY b.id, b.title, b.description, u.name, b.step_id`
+          GROUP BY b.id, b.title, b.description, u.name, b.step_id`,
       );
       // If no manuscripts are found
       if (manuscripts.length === 0) {
@@ -103,7 +120,7 @@ router.get("/", async (req, res) => {
         currentUserId,
         currentUserRoleId,
         employee,
-      ]
+      ],
     );
 
     // Log the query for debugging purposes
@@ -212,7 +229,7 @@ router.get("/:id/comments", validateManuscriptAccess, async (req, res) => {
          INNER JOIN users u ON u.id = c.user_id
          WHERE c.book_id = ?
          ORDER BY c.created_at DESC`,
-      [manuscript.id]
+      [manuscript.id],
     );
 
     // Log the query for debugging purposes
@@ -240,6 +257,220 @@ router.get("/:id/comments", validateManuscriptAccess, async (req, res) => {
     return res.status(500).json({ error: "Internal server error." });
   }
 });
+
+/**
+ * Submit a new manuscript
+ *
+ * @name POST /manuscripts
+ * @function
+ * @async
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ * @returns {Object} - The response object containing the manuscript ID
+ */
+router.post("/", async (req, res) => {
+  try {
+    // Get the user from the database
+    const firebase_uid = req.user.uid;
+    const [users] = await dbPool.query(
+      "SELECT id, role_id FROM users WHERE firebase_uid = ?",
+      [firebase_uid],
+    );
+
+    if (users.length === 0) {
+      return res.status(403).json({ error: "Access Denied." });
+    }
+
+    const userId = users[0].id;
+
+    // Get role IDs
+    const roleIds = await getRoleIds();
+
+    // Verify the user is an author
+    if (users[0].role_id !== roleIds.author) {
+      return res
+        .status(403)
+        .json({ error: "Only authors can submit manuscripts." });
+    }
+
+    // Get the author ID
+    const [authors] = await dbPool.query(
+      "SELECT id FROM authors WHERE user_id = ?",
+      [userId],
+    );
+
+    if (authors.length === 0) {
+      return res.status(403).json({ error: "Author profile not found." });
+    }
+
+    const authorId = authors[0].id;
+
+    // Validate required fields
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+      return res
+        .status(400)
+        .json({ error: "Title and description are required." });
+    }
+
+    // Sanitize the input
+    const sanitizedTitle = sanitizeHtml(title, {
+      allowedTags: [],
+      allowedAttributes: {},
+      textFilter: (text) => text.trim(),
+    });
+
+    const sanitizedDescription = sanitizeHtml(description, {
+      allowedTags: [],
+      allowedAttributes: {},
+      textFilter: (text) => text.trim(),
+    });
+
+    if (sanitizedTitle.length === 0 || sanitizedDescription.length === 0) {
+      return res.status(400).json({ error: "Invalid input." });
+    }
+
+    // Get the submission step ID
+    const [steps] = await dbPool.query(
+      "SELECT id FROM workflow_steps WHERE name = 'submission' LIMIT 1",
+    );
+
+    if (steps.length === 0) {
+      return res.status(500).json({ error: "Workflow step not found." });
+    }
+
+    const stepId = steps[0].id;
+
+    // Insert the manuscript into the database
+    const [result] = await dbPool.query(
+      `INSERT INTO books (title, author_id, description, step_id) 
+       VALUES (?, ?, ?, ?)`,
+      [sanitizedTitle, authorId, sanitizedDescription, stepId],
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(500).json({ error: "Failed to create manuscript." });
+    }
+
+    res.status(201).json({
+      id: result.insertId,
+      message: "Manuscript submitted successfully.",
+    });
+  } catch (err) {
+    console.error("Error creating manuscript:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+/**
+ * Upload a manuscript version
+ *
+ * @name POST /manuscripts/:id/versions
+ * @function
+ * @async
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ * @param {string} req.params.id - The manuscript ID
+ * @returns {Object} - The response object containing the file URL
+ */
+router.post(
+  "/:id/versions",
+  validateManuscriptAccess,
+  upload.single("file"),
+  async (req, res) => {
+    try {
+      // Get manuscript information from middleware
+      const manuscript = req.manuscript;
+      const userId = req.currentUserId;
+
+      // Check if file was uploaded
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      // Create container name based on manuscript ID (makes it easier to organize)
+      const containerName = `manuscripts-${manuscript.id}`;
+
+      const fileName = `${Date.now()}-${req.file.originalname.replace(/\s+/g, "-")}`;
+      const fileUrl = await uploadToAzureStorage(
+        containerName,
+        fileName,
+        req.file,
+      );
+
+      // Store the file URL in the book_versions table
+      const [result] = await dbPool.query(
+        `INSERT INTO book_versions (book_id, file_path, uploaded_by) 
+       VALUES (?, ?, ?)`,
+        [manuscript.id, fileUrl, userId],
+      );
+
+      if (result.affectedRows === 0) {
+        return res
+          .status(500)
+          .json({ error: "Failed to record file version." });
+      }
+
+      res.status(200).json({
+        message: "File uploaded successfully",
+        fileName: fileName,
+        url: fileUrl,
+      });
+    } catch (err) {
+      console.error("Error uploading manuscript version:", err);
+
+      if (err.message === "Only PDF files are allowed") {
+        return res.status(400).json({ error: err.message });
+      }
+
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
+
+/**
+ * Upload file to Azure Blob Storage
+ * @param {string} containerName - The container name
+ * @param {string} fileName - The file name
+ * @param {Object} file - The file object from multer
+ * @returns {Promise<string>} - The URL of the uploaded file
+ */
+async function uploadToAzureStorage(containerName, fileName, file) {
+  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+  if (!connectionString) {
+    throw new Error("Azure Storage connection string not found");
+  }
+
+  const blobServiceClient =
+    BlobServiceClient.fromConnectionString(connectionString);
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+
+  await containerClient.createIfNotExists();
+
+  const blockBlobClient = containerClient.getBlockBlobClient(fileName);
+
+  // Convert buffer to stream
+  const bufferStream = new stream.PassThrough();
+  bufferStream.end(file.buffer);
+
+  const uploadOptions = {
+    blobHTTPHeaders: {
+      blobContentType: file.mimetype,
+    },
+  };
+
+  await blockBlobClient.uploadStream(
+    bufferStream,
+    uploadOptions.blobHTTPHeaders.blobContentType
+      ? file.buffer.length
+      : undefined,
+    undefined,
+    uploadOptions,
+  );
+
+  return blockBlobClient.url;
+}
 
 /**
  * Add a comment to a manuscript.
@@ -287,7 +518,7 @@ router.post("/:id/comments", validateManuscriptAccess, async (req, res) => {
     const [result] = await dbPool.query(
       `INSERT INTO comments (book_id, user_id, step_id, content) 
          VALUES (?, ?, ?, ?)`,
-      [manuscript.id, userId, manuscript.current_step, sanitizedContent]
+      [manuscript.id, userId, manuscript.current_step, sanitizedContent],
     );
     // Check if the insert was successful
     if (result.affectedRows === 0) {
@@ -320,7 +551,7 @@ router.post("/:id/advance", validateManuscriptAccess, async (req, res) => {
     // Get the next step from the workflow
     const [nextStep] = await dbPool.query(
       "SELECT next_step_id FROM workflow_order WHERE step_id = ?",
-      [currentStep]
+      [currentStep],
     );
     // Check if there is a next step available
     if (nextStep.length === 0 || nextStep[0].next_step_id === null) {
@@ -359,7 +590,7 @@ router.post("/:id/cancel", validateManuscriptAccess, async (req, res) => {
 
     // Fetch the ID of the "cancelled" step from the database
     const [rows] = await dbPool.query(
-      "SELECT id FROM workflow_steps WHERE name = 'cancelled' LIMIT 1"
+      "SELECT id FROM workflow_steps WHERE name = 'cancelled' LIMIT 1",
     );
     if (rows.length === 0) {
       console.error("Cancelled step not found in the database.");
