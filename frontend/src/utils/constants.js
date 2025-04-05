@@ -12,4 +12,9 @@ const API_ENDPOINTS = {
   },
 };
 
-export { API_ENDPOINTS };
+const QUILL_ROLES = {
+  ADMIN: 1,
+  EMPLOYEE: 2,
+  AUTHOR: 3,
+};
+export { API_ENDPOINTS, QUILL_ROLES };

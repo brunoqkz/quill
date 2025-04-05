@@ -9,13 +9,15 @@ import NewAuthorForm from "./components/NewAuthorForm";
 import NewUserForm from "./components/NewUserForm";
 import UserManagement from "./components/UserManagement";
 import User from "./components/User";
+import SideMenu from "./components/SideMenu";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <AuthProvider>
       <Header />
-      <main className="flex flex-col h-screen">
+      <main className="flex h-screen">
+        <SideMenu />
         <Routes>
           <Route path="/" element={<SignInForm />} />
           <Route path="/register-author" element={<NewAuthorForm />} />
