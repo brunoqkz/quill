@@ -35,8 +35,12 @@ export const AuthProvider = ({ children }) => {
         password
       );
       const idToken = await userCredential.user.getIdToken();
-      setUser(userCredential.user);
-      setToken(idToken);
+
+      const idTokenResult = await userCredential.user.getIdTokenResult();
+      const claims = idTokenResult.claims;
+
+      setUser(claims);
+      setToken(idTokenResult.token);
     } catch (error) {
       throw mapAuthError(error);
     }
@@ -66,6 +70,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Check if the token is valid
+   * If the token is expired, log out the user
+   *
+   * @returns {boolean}
+   */
+  const isTokenValid = () => {
+    const now = Math.floor(Date.now() / 1000);
+    if (user?.exp && user.exp < now) {
+      logout();
+      return false;
+    }
+    return true;
+  };
+
+  /**
    * Map auth error to custom error
    * @param {Object} error
    * @returns {Error}
@@ -88,7 +107,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, logout, sendPasswordReset }}
+      value={{ user, token, login, logout, sendPasswordReset, isTokenValid }}
     >
       {children}
     </AuthContext.Provider>

@@ -10,7 +10,7 @@ import "./style.scss";
  * @returns {JSX.Element}
  */
 function User() {
-  const { user, token } = useAuth();
+  const { user, token, isTokenValid } = useAuth();
   const { userId } = useParams();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -22,6 +22,13 @@ function User() {
     email: "",
     role_id: 2,
   });
+
+  // Redirect to login page if user is not logged in
+  useEffect(() => {
+    if (!isTokenValid()) {
+      navigate("/");
+    }
+  }, [token, user, navigate]);
 
   // Fetch user data on component mount
   useEffect(() => {
