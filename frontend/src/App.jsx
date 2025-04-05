@@ -10,6 +10,7 @@ import NewUserForm from "./components/NewUserForm";
 import UserManagement from "./components/UserManagement";
 import User from "./components/User";
 import SideMenu from "./components/SideMenu";
+import Manuscript from "./components/Manuscript";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/users" element={<UserManagement />} />
           <Route path="/users/:userId" element={<User />} />
           <Route path="/register/user" element={<NewUserForm />} />
+          <Route path="/manuscript/:manuscriptId" element={<Manuscript />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

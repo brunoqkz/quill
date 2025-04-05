@@ -1,0 +1,121 @@
+.manuscript-container {
+  background: var(--quill-grey);
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: sans-serif;
+  min-width: 760px;
+  min-height: 400px;
+  margin: auto;
+
+  .manuscript-steps {
+    background: var(--quill-navy);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    color: white;
+    width: 100%;
+    min-height: 150px;
+    position: relative;
+    z-index: 0;
+
+    .step-wrapper {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      align-items: center;
+
+      p {
+        font-size: 1.4rem;
+        margin-bottom: 0.25rem;
+        z-index: 2;
+      }
+
+      .active-stage {
+        font-weight: bold;
+      }
+
+      .circle {
+        background: white;
+        color: var(--quill-navy);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        z-index: 2;
+        margin: auto;
+      }
+
+      .circle.active {
+        background: var(--quill-navy);
+        color: #fff;
+        border: 2px solid #fff;
+        z-index: 2;
+      }
+
+      .line {
+        position: absolute;
+        top: 70%;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: white;
+        z-index: -1;
+        transform: translateX(55%);
+      }
+    }
+  }
+
+  .manuscript-details {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    padding: 3em 1.5rem 1.5rem 1.5rem;
+    gap: 1rem;
+
+    .detail-wrapper {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      .label-wrapper {
+        flex: 1;
+        margin: auto;
+
+        label {
+          padding-left: 10rem;
+          font-size: 1.6rem;
+          color: var(--quill-navy);
+          display: block;
+          text-align: left;
+        }
+      }
+
+      .cancelled label,
+      .cancelled p {
+        color: var(--quill-burgundy);
+      }
+
+      .info-wrapper {
+        flex: 1;
+
+        p {
+          font-size: 1.6rem;
+          text-align: left;
+          padding-right: 5rem;
+
+          .icon {
+            margin-left: 0.5rem;
+            font-size: 0.8rem;
+            color: gray;
+          }
+        }
+      }
+    }
+  }
+}
