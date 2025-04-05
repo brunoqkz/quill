@@ -5,11 +5,15 @@ import { useEffect } from "react";
 import { QUILL_ROLES, MANUSCRIPT_STAGES } from "../../../utils/constants";
 
 /**
- * Dashboard component
+ * Manuscripts component
+ *
+ * @component
+ * @description This component displays a list of manuscripts based on the user's role.
+ * @param {object} manuscripts - Array of manuscripts
  * @returns {JSX.Element}
  */
 function Manuscripts({ manuscripts }) {
-  const { user, token, isTokenValid } = useAuth();
+  const { user, isTokenValid } = useAuth();
 
   const navigate = useNavigate();
 
@@ -19,6 +23,10 @@ function Manuscripts({ manuscripts }) {
     }
   }, []);
 
+  /**
+   * Get the title of the article based on user role   *
+   * @returns {string} The title of the article based on user role
+   */
   function getArticleTitle() {
     let userRole = user.role_id;
     if (userRole == QUILL_ROLES.ADMIN) {
