@@ -35,6 +35,9 @@ function SideMenu() {
   const getAdminMenu = () => {
     return (
       <>
+        <li className="cursor-pointer" onClick={() => navigate("/dashboard")}>
+          Manuscript Queue
+        </li>
         <li className="cursor-pointer" onClick={() => navigate("/users")}>
           User Management
         </li>
@@ -49,17 +52,29 @@ function SideMenu() {
   };
 
   const getEmployeeMenu = () => {
-    return <></>;
+    return (
+      <>
+        <li className="cursor-pointer" onClick={() => navigate("/dashboard")}>
+          Manuscript Queue
+        </li>
+      </>
+    );
   };
 
   const getAuthorMenu = () => {
-    return <></>;
+    return (
+      <>
+        <li className="cursor-pointer" onClick={() => navigate("/dashboard")}>
+          My Manuscripts
+        </li>
+      </>
+    );
   };
 
   return (
     <aside className="flex h-full">
       <div className="flex flex-1 flex-col">
-        <h1>
+        <h2>
           <a
             className="cursor-pointer"
             href="#"
@@ -67,11 +82,11 @@ function SideMenu() {
           >
             My Dashboard
           </a>
-        </h1>
+        </h2>
         <ul>
-          {user.role_id === QUILL_ROLES.ADMIN && getAdminMenu()}
-          {user.role_id === QUILL_ROLES.EMPLOYEE && getEmployeeMenu()}
-          {user.role_id === QUILL_ROLES.AUTHOR && getAuthorMenu()}
+          {user.role_id == QUILL_ROLES.ADMIN && getAdminMenu()}
+          {user.role_id == QUILL_ROLES.EMPLOYEE && getEmployeeMenu()}
+          {user.role_id == QUILL_ROLES.AUTHOR && getAuthorMenu()}
           <li className="cursor-pointer" onClick={handleLogout}>
             Logout
           </li>

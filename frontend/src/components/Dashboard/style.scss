@@ -1,14 +1,8 @@
 section {
-  color: var(--quill-navy);
-  margin: auto;
+  padding: 5rem;
 
-  .user-management {
-    display: flex;
-    justify-content: space-between;
-
-    button {
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-    }
+  h1 {
+    font-size: 4rem;
+    color: var(--quill-navy);
   }
 }

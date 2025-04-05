@@ -12,13 +12,14 @@ import { API_ENDPOINTS } from "../../utils/constants";
  * @returns {JSX.Element}
  */
 function UserManagement() {
-  const { user, token } = useAuth();
-  const navigate = useNavigate();
+  const { user, token, isTokenValid } = useAuth();
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const navigate = useNavigate();
 
   // Role mapping
   const roleMapping = {
@@ -101,6 +102,8 @@ function UserManagement() {
     const isAuthenticated = token && isTokenValid();
     if (!isAuthenticated) {
       navigate("/");
+    } else {
+      fetchUsers();
     }
   }, [token, isTokenValid, navigate]);
   if (!user || !token) {
