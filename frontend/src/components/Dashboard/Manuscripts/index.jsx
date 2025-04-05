@@ -1,55 +1,23 @@
 import "./style.scss";
 import { useAuth } from "../../AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import {
-  API_ENDPOINTS,
-  QUILL_ROLES,
-  MANUSCRIPT_STAGES,
-} from "../../../utils/constants";
+import { useEffect } from "react";
+import { QUILL_ROLES, MANUSCRIPT_STAGES } from "../../../utils/constants";
 
 /**
  * Dashboard component
  * @returns {JSX.Element}
  */
-function Manuscripts() {
+function Manuscripts({ manuscripts }) {
   const { user, token, isTokenValid } = useAuth();
-  const [manuscripts, setManuscripts] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isTokenValid()) {
       navigate("/");
-    } else {
-      fetchManuscripts();
     }
   }, []);
-
-  // Fetch manuscripts from the API
-  const fetchManuscripts = async () => {
-    try {
-      const response = await fetch(API_ENDPOINTS.MANUSCRIPTS.BASE, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        // Redirect to Dashboard if user is not authorized
-        if (response.status === 403) {
-          navigate("/dashboard");
-        }
-        throw new Error("Failed to fetch manuscripts");
-      }
-      const data = await response.json();
-      setManuscripts(data);
-      console.log("Fetched manuscripts:", data);
-    } catch (error) {
-      console.error("Error fetching manuscripts:", error);
-    }
-  };
 
   function getArticleTitle() {
     let userRole = user.role_id;
@@ -135,8 +103,3 @@ function Manuscripts() {
 }
 
 export default Manuscripts;
-
-/* <Manuscript
-      key={manuscript.id}
-      details={manuscript}
-    /> */
