@@ -21,7 +21,7 @@ function Comments({ manuscripts }) {
       }))
     );
     // Limit the number of comments to show
-    let commentsToShow = 4;
+    let commentsToShow = 3;
     // Sort comments by created_at date and get the most recent four
     return allComments
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))

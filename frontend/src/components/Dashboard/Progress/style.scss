@@ -1,0 +1,79 @@
+.progress-container {
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+  background: var(--quill-grey);
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--quill-navy);
+
+  h3 {
+    font-size: 2.4rem;
+    color: var(--quill-navy);
+    margin-bottom: 10px;
+  }
+}
+
+.progress-box {
+  width: 100%;
+  margin: 25px 0;
+}
+
+.progress-title {
+  display: block;
+  font-size: 1.4rem;
+  color: var(--quill-navy);
+}
+
+.progress-bar {
+  height: 8px;
+  width: 100%;
+  border-radius: 6px;
+  margin-top: 6px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  position: relative;
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--quill-navy);
+  animation: progress 0.4s ease-in-out forwards;
+  opacity: 0;
+}
+
+@keyframes progress {
+  0% {
+    width: 0;
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.progress-fill .tooltip {
+  position: absolute;
+  right: -14px;
+  top: -28px;
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--quill-grey);
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--quill-navy);
+  z-index: 1;
+}
+
+.tooltip::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  height: 10px;
+  width: 10px;
+  z-index: -1;
+  background-color: var(--quill-navy);
+  transform: translateX(-50%) rotate(45deg);
+}
