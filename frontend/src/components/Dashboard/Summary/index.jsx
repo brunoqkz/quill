@@ -16,15 +16,9 @@ import { MdOutlineCancel } from "react-icons/md";
  * @returns {JSX.Element}
  */
 function Summary({ manuscripts }) {
-  const { user, isTokenValid } = useAuth();
+  const { user } = useAuth();
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isTokenValid()) {
-      navigate("/");
-    }
-  }, []);
 
   /**
    * Get total number of comments across all manuscripts   *

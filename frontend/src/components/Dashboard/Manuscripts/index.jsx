@@ -13,15 +13,9 @@ import { QUILL_ROLES, MANUSCRIPT_STAGES } from "../../../utils/constants";
  * @returns {JSX.Element}
  */
 function Manuscripts({ manuscripts }) {
-  const { user, isTokenValid } = useAuth();
+  const { user } = useAuth();
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isTokenValid()) {
-      navigate("/");
-    }
-  }, []);
 
   /**
    * Get the title of the article based on user role   *
