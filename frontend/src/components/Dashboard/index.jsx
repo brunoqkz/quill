@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Manuscripts from "./Manuscripts";
 import { API_ENDPOINTS } from "../../utils/constants";
 import Summary from "./Summary";
+import Comments from "./Comments";
 
 /**
  * Dashboard component
@@ -107,9 +108,10 @@ function Dashboard() {
   return (
     <section>
       <h1>Welcome back, {user && user.name.split(" ")[0]}!</h1>
-      <div className="content flex">
-        <div className="center flex">
+      <div className="content flex gap-8">
+        <div className="center flex flex-col gap-8">
           <Manuscripts manuscripts={manuscripts} />
+          <Comments manuscripts={manuscripts} />
         </div>
         <div className="right flex">
           <Summary manuscripts={manuscripts} />
