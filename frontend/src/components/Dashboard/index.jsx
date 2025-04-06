@@ -6,6 +6,7 @@ import Manuscripts from "./Manuscripts";
 import { API_ENDPOINTS } from "../../utils/constants";
 import Summary from "./Summary";
 import Comments from "./Comments";
+import Progress from "./Progress";
 
 /**
  * Dashboard component
@@ -113,8 +114,9 @@ function Dashboard() {
           <Manuscripts manuscripts={manuscripts} />
           <Comments manuscripts={manuscripts} />
         </div>
-        <div className="right flex">
+        <div className="right flex flex-col gap-8">
           <Summary manuscripts={manuscripts} />
+          <Progress manuscripts={manuscripts} />
         </div>
       </div>
     </section>
