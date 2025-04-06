@@ -1,7 +1,4 @@
 import "./style.scss";
-import { useAuth } from "../../AuthProvider";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 /**
  * Comments component
@@ -12,19 +9,6 @@ import { useEffect } from "react";
  * @returns {JSX.Element}
  */
 function Comments({ manuscripts }) {
-  const { isTokenValid } = useAuth();
-
-  const navigate = useNavigate();
-
-  /**
-   * Redirect to login page if user is not logged in
-   */
-  useEffect(() => {
-    if (!isTokenValid()) {
-      navigate("/");
-    }
-  }, []);
-
   /**
    * Get the most three recent comments from all the manuscripts
    * * @returns {Array} Array of comments
