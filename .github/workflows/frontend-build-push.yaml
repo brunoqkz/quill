@@ -63,6 +63,8 @@ jobs:
         run: |
           COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
           echo "Tagged as sha-$COMMIT_SHA and latest"
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+          echo "Creating latest tag based on sha-$COMMIT_SHA"
+          docker buildx imagetools create \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA
