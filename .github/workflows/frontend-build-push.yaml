@@ -41,7 +41,6 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
@@ -59,11 +58,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Add a predictable sha tag for main branch
-      - name: Tag sha for main branch
+      - name: Tag latest for main branch
         if: github.ref == 'refs/heads/main'
         run: |
           COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "Tagged as sha-$COMMIT_SHA for deployment tracking"
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA
+          echo "Tagged as sha-$COMMIT_SHA and latest"
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
