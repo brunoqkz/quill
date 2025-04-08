@@ -1,4 +1,5 @@
 const mysql = require("mysql2/promise");
+const fs = require("fs");
 
 /**
  * MySQL connection pool for database operations
@@ -10,6 +11,15 @@ const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  ssl:
+    process.env.DB_SSL === "true"
+      ? {
+          ca: process.env.DB_SSL_CA
+            ? fs.readFileSync(process.env.DB_SSL_CA)
+            : undefined,
+          rejectUnauthorized: true,
+        }
+      : false,
 });
 
 module.exports = pool;
