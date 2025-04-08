@@ -32,11 +32,21 @@
 
     .action {
       margin: auto;
-
+      display: flex;
+      gap: 1rem;
       .btn-action {
         flex: 1;
         color: var(--quill-grey);
         background-color: var(--quill-navy);
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--quill-navy);
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .btn-advance {
+        background-color: var(--quill-grey);
+        color: var(--quill-navy);
         padding: 0.5rem 1rem;
         border: 1px solid var(--quill-navy);
         border-radius: 5px;

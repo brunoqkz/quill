@@ -111,7 +111,10 @@ function Dashboard() {
       <h1>Welcome back, {user && user.name.split(" ")[0]}!</h1>
       <div className="content flex gap-8">
         <div className="center flex flex-col gap-8">
-          <Manuscripts manuscripts={manuscripts} />
+          <Manuscripts
+            manuscripts={manuscripts}
+            setManuscripts={setManuscripts}
+          />
           <Comments manuscripts={manuscripts} />
         </div>
         <div className="right flex flex-col gap-8">

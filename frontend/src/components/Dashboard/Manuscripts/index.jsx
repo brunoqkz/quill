@@ -2,7 +2,11 @@ import "./style.scss";
 import { useAuth } from "../../AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { QUILL_ROLES, MANUSCRIPT_STAGES } from "../../../utils/constants";
+import {
+  QUILL_ROLES,
+  MANUSCRIPT_STAGES,
+  API_ENDPOINTS,
+} from "../../../utils/constants";
 
 /**
  * Manuscripts component
@@ -12,8 +16,8 @@ import { QUILL_ROLES, MANUSCRIPT_STAGES } from "../../../utils/constants";
  * @param {object} manuscripts - Array of manuscripts
  * @returns {JSX.Element}
  */
-function Manuscripts({ manuscripts }) {
-  const { user } = useAuth();
+function Manuscripts({ manuscripts, setManuscripts }) {
+  const { user, token } = useAuth();
 
   const navigate = useNavigate();
 
@@ -34,6 +38,31 @@ function Manuscripts({ manuscripts }) {
     } else {
       console.error("Invalid user role");
       return "";
+    }
+  }
+
+  async function handleAdvanceManuscript(manuscriptId) {
+    try {
+      const response = await fetch(
+        API_ENDPOINTS.MANUSCRIPTS.ADVANCE(manuscriptId),
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Update the manuscripts state to reflect the changes
+        // Move the manuscript to the next stage
+      } else {
+        throw new Error("Something went wrong.");
+      }
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+      alert("Server error.");
     }
   }
 
@@ -88,7 +117,7 @@ function Manuscripts({ manuscripts }) {
             <button
               className="btn-action"
               onClick={() => {
-                navigate(`/manuscript/${manuscript.id}`, {
+                navigate(`/book/${manuscript.id}`, {
                   state: { manuscript },
                 });
               }}
@@ -97,6 +126,16 @@ function Manuscripts({ manuscripts }) {
                 ? "View Timeline"
                 : "View"}
             </button>
+            {user && user.role_id != QUILL_ROLES.AUTHOR && (
+              <button
+                className="btn-advance"
+                onClick={() => {
+                  handleAdvanceManuscript(manuscript.id);
+                }}
+              >
+                Advance
+              </button>
+            )}
           </div>
         </div>
       ))}

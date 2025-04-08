@@ -106,37 +106,6 @@ router.get("/", async (req, res) => {
       ]
     );
 
-    // Log the query for debugging purposes
-    console.log("Query:", {
-      sql: `SELECT
-          b.id AS id,
-          b.title AS title,
-          b.description AS description,
-          u.name AS author,
-          b.step_id AS current_step,
-          COALESCE(GROUP_CONCAT(DISTINCT d.id ORDER BY d.id SEPARATOR ', '), '') AS assigned_departments
-        FROM books b        
-        INNER JOIN authors a ON a.id = b.author_id
-        INNER JOIN users u ON u.id = a.user_id
-        LEFT JOIN department_workflow_steps dws ON dws.workflow_step_id = b.step_id
-        LEFT JOIN departments d ON d.id = dws.department_id
-        LEFT JOIN employees e ON e.department_id = d.id
-        LEFT JOIN users ue ON ue.id = e.user_id
-        WHERE
-          (u.id = ? AND ? = ?)
-        OR
-          (ue.id = ? AND ? = ?)
-        GROUP BY b.id, b.title, b.description, u.name, b.step_id`,
-      params: [
-        currentUserId,
-        currentUserRoleId,
-        author,
-        currentUserId,
-        currentUserRoleId,
-        employee,
-      ],
-    });
-
     if (manuscripts.length === 0) {
       return res.status(204).end();
     }
@@ -146,8 +115,6 @@ router.get("/", async (req, res) => {
         ? manuscript.assigned_departments.split(",").map(Number)
         : [];
     });
-    // TODO: Remove Debugging
-    console.log(manuscripts);
     return res.status(200).json(manuscripts);
   } catch (err) {
     console.error("Error fetching manuscripts:", err);
@@ -215,16 +182,6 @@ router.get("/:id/comments", validateManuscriptAccess, async (req, res) => {
       [manuscript.id]
     );
 
-    // Log the query for debugging purposes
-    console.log("Query:", {
-      sql: `SELECT c.id, c.step_id, c.content, c.created_at, u.name AS author
-          FROM comments c
-          INNER JOIN users u ON u.id = c.user_id
-          WHERE c.book_id = ?
-          ORDER BY c.created_at DESC`,
-      params: [manuscript.id],
-    });
-
     // If no comments are found
     if (comments.length === 0) {
       return res
@@ -232,8 +189,6 @@ router.get("/:id/comments", validateManuscriptAccess, async (req, res) => {
         .json({ error: "No comments found for this manuscript." });
     }
 
-    // TODO: Remove Debugging
-    console.log(comments);
     return res.json(comments);
   } catch (err) {
     console.error("Error fetching comments:", error);

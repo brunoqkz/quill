@@ -1,0 +1,118 @@
+.book-dashboard {
+  flex: 1;
+  padding: 2rem;
+
+  .left {
+    flex: 2;
+
+    .status,
+    .summary {
+      color: var(--quill-navy);
+      background-color: var(--quill-grey);
+      border: 1px solid var(--quill-navy);
+      border-radius: 10px;
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+
+      h2 {
+        font-size: 2.8rem;
+      }
+
+      .info,
+      .info-wrapper {
+        flex: 1;
+
+        p {
+          color: var(--quill-dark-grey);
+        }
+      }
+    }
+
+    .comments-card {
+      color: var(--quill-navy);
+      background-color: var(--quill-grey);
+      padding: 1.5rem 2rem;
+      border: 1px solid var(--quill-navy);
+      border-radius: 10px;
+      min-width: 670px;
+      margin-top: 2rem;
+
+      h2 {
+        font-size: 2.8rem;
+        margin-bottom: 1.2rem;
+        font-weight: 400;
+      }
+
+      .comment-item {
+        margin-bottom: 1rem;
+
+        .content {
+          font-size: 1.4rem;
+          font-style: italic;
+          margin-bottom: 0.4rem;
+        }
+
+        .meta {
+          font-size: 1.2rem;
+          color: #555;
+        }
+
+        hr {
+          border: none;
+          border-top: 1px solid var(--quill-gold);
+          margin: 1rem 0;
+        }
+      }
+
+      .comment-input {
+        .comment-textarea {
+          border: 1px solid var(--quill-navy);
+          border-radius: 10px;
+          padding: 1rem 2rem;
+        }
+
+        .btn-primary {
+          background-color: var(--quill-navy);
+          color: var(--quill-grey);
+          border-radius: 10px;
+          padding: 0.5rem 2rem;
+          font-size: 1.4rem;
+          height: fit-content;
+          align-self: flex-end;
+        }
+      }
+    }
+  }
+
+  .right {
+    flex: 1;
+
+    .status {
+      color: var(--quill-navy);
+      background-color: var(--quill-grey);
+      border: 1px solid var(--quill-navy);
+      border-radius: 10px;
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+
+      h2 {
+        font-size: 2.8rem;
+      }
+    }
+  }
+
+  .bg-blue {
+    background-color: var(--quill-navy);
+  }
+  .bg-grey {
+    background-color: var(--quill-dark-grey);
+  }
+  .txt-blue {
+    color: var(--quill-navy);
+  }
+  .txt-grey {
+    color: var(--quill-dark-grey);
+  }
+}
