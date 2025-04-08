@@ -1,7 +1,6 @@
 import "./style.scss";
 import { useAuth } from "../../AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { QUILL_ROLES, MANUSCRIPT_STAGES } from "../../../utils/constants";
 import { GoBook } from "react-icons/go";
 import { TfiComments } from "react-icons/tfi";
