@@ -72,7 +72,7 @@ function SideMenu() {
   };
 
   return (
-    <aside className="flex h-full">
+    <aside className="flex">
       <div className="flex flex-1 flex-col">
         <h2>
           <a

@@ -11,13 +11,14 @@ import UserManagement from "./components/UserManagement";
 import User from "./components/User";
 import SideMenu from "./components/SideMenu";
 import Manuscript from "./components/Manuscript";
+import BookDashboard from "./components/BookDashboard";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <AuthProvider>
       <Header />
-      <main className="flex h-screen">
+      <main className="flex">
         <SideMenu />
         <Routes>
           <Route path="/" element={<SignInForm />} />
@@ -27,6 +28,7 @@ function App() {
           <Route path="/users/:userId" element={<User />} />
           <Route path="/register/user" element={<NewUserForm />} />
           <Route path="/manuscript/:manuscriptId" element={<Manuscript />} />
+          <Route path="/book/:manuscriptId" element={<BookDashboard />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
