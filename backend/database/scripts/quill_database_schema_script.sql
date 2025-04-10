@@ -33,7 +33,7 @@ CREATE TABLE `authors` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`),
   CONSTRAINT `authors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `authors` (
 
 LOCK TABLES `authors` WRITE;
 /*!40000 ALTER TABLE `authors` DISABLE KEYS */;
-INSERT INTO `authors` VALUES (1,1,NULL,NULL,'2025-03-16 01:10:53');
+INSERT INTO `authors` VALUES (1,1,NULL,NULL,'2025-03-16 01:10:53'),(2,10,NULL,NULL,'2025-04-09 12:37:42');
 /*!40000 ALTER TABLE `authors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -73,7 +73,6 @@ CREATE TABLE `book_versions` (
 
 LOCK TABLES `book_versions` WRITE;
 /*!40000 ALTER TABLE `book_versions` DISABLE KEYS */;
-INSERT INTO `book_versions` VALUES (1,1,'url://path.to.the.book.file','2025-04-01 17:40:44',1),(2,2,'url://path.to.the.book.file','2025-04-01 17:41:01',1);
 /*!40000 ALTER TABLE `book_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +96,7 @@ CREATE TABLE `books` (
   KEY `step_id` (`step_id`),
   CONSTRAINT `books_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON DELETE CASCADE,
   CONSTRAINT `books_ibfk_2` FOREIGN KEY (`step_id`) REFERENCES `workflow_steps` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,7 +105,7 @@ CREATE TABLE `books` (
 
 LOCK TABLES `books` WRITE;
 /*!40000 ALTER TABLE `books` DISABLE KEYS */;
-INSERT INTO `books` VALUES (1,'The First Book',1,'Description of the first Quill Book',1,'2025-04-01 17:38:40','2025-04-01 17:38:40'),(2,'The Canceled Book',1,'This book was declined by Ethereal Ink.',8,'2025-04-01 17:39:35','2025-04-01 17:39:35');
+INSERT INTO `books` VALUES (3,'The Stars Beyond',1,'A sci-fi journey across the galaxy as a young pilot uncovers ancient secrets.',1,'2025-04-09 12:44:25','2025-04-09 12:44:25'),(4,'Whispers of the Forest',2,'Mystical creatures awaken as deforestation threatens an ancient forest.',2,'2025-04-09 12:44:27','2025-04-09 12:44:27'),(5,'Echoes of the Mind',1,'A psychological thriller where nothing is as it seems.',3,'2025-04-09 12:44:28','2025-04-09 12:44:28'),(6,'Tides of Tomorrow',2,'A climate fiction novel set in a near-future coastal city.',4,'2025-04-09 12:44:30','2025-04-09 12:44:30'),(7,'Chronicles of Flame',1,'Epic fantasy where dragons return to reclaim the skies.',5,'2025-04-09 12:44:31','2025-04-09 12:44:31');
 /*!40000 ALTER TABLE `books` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,7 +130,7 @@ CREATE TABLE `comments` (
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE,
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `comments_ibfk_3` FOREIGN KEY (`step_id`) REFERENCES `workflow_steps` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +139,7 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` VALUES (1,1,1,1,'I just submitted my maniscript.\nThanks in advance for considering it for publication.','2025-04-01 17:42:40'),(2,0,1,8,'Hi Ethereal Ink group,\nCould I get a reasoning why this book was declined for publication?','2025-04-01 17:43:36'),(3,0,2,8,'Hello Mr. Doe,\nThis manuscript was decline, because Ethereal Ink does not publish comic books.\nThank you for choosing Ethereal Ink.','2025-04-01 17:46:44');
+INSERT INTO `comments` VALUES (14,4,7,2,'Interesting premise. Consider clarifying the motivation of the antagonist in chapter 3.','2025-04-09 12:50:16'),(15,5,7,3,'Chapter 5 needs some work on pacing and character development.','2025-04-09 12:50:25'),(16,5,8,4,'The book cover is done.','2025-04-09 12:50:25'),(17,6,9,4,'Found a few typos and grammar issues in chapters 1 and 4.','2025-04-09 12:50:27');
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -215,7 +214,7 @@ CREATE TABLE `employees` (
   KEY `department_id` (`department_id`),
   CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `employees_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,6 +223,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
+INSERT INTO `employees` VALUES (1,7,1),(2,8,2),(3,9,4);
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -351,7 +351,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -360,7 +360,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'vf2RxPy6JgZ8qFhxqzzI293ug8D3','John Doe','john@example.com',3,'2025-03-16 01:10:53'),(2,'LIrlXwQAMEVhbpQjlgXLpjFtj733','Diego Bastos','bastosdiegol@gmail.com',1,'2025-04-01 00:55:15');
+INSERT INTO `users` VALUES (1,'vf2RxPy6JgZ8qFhxqzzI293ug8D3','John Doe','john@example.com',3,'2025-03-16 01:10:53'),(2,'LIrlXwQAMEVhbpQjlgXLpjFtj733','Diego Bastos','bastosdiegol@gmail.com',1,'2025-04-01 00:55:15'),(6,'TIsJJWDFWEc5vuqYyeTnjxQYAtD2','Bruno Ribeiro','brunoqkz@gmail.com ',1,'2025-04-09 12:21:40'),(7,'xGwK1OHo2zd3TkQfSOHwsCSJrxD3','Editor','editor@quill.ca',2,'2025-04-09 12:23:30'),(8,'aeVL32CTGxOfsLS5AG4iu0foJY53','Illustrator','illustrator@quill.ca',2,'2025-04-09 12:30:22'),(9,'NeU8pmF6sQVie8b4KRKXjZMyoNh2','Typesetter','typesetter@quill.ca',2,'2025-04-09 12:33:01'),(10,'JzCGeEDJy5cwhUr1u7ehW9mKfGd2','Jane Doe','jane@example.com',3,'2025-04-09 12:34:39');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -426,4 +426,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-01 13:47:48
+-- Dump completed on 2025-04-09  9:03:46

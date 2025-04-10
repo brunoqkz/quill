@@ -43,8 +43,8 @@ function BookDashboard() {
     return null;
   }
 
-  function renderProgressIndicator(currentStep) {
-    if (currentStep == 8) {
+  function renderProgressIndicator() {
+    if (manuscript.current_step == 8) {
       return (
         <div className="flex items-center justify-center text-gray-500">
           <p className="text-sm">This manuscript has been cancelled.</p>
@@ -52,83 +52,128 @@ function BookDashboard() {
       );
     }
 
-    const stageEntries = Object.entries(MANUSCRIPT_STAGES).filter(
-      ([id]) => Number(id) <= currentStep + 1 && Number(id) !== 8
-    );
-
-    const stageCount = stageEntries.length;
-
     return (
       <div>
         <h2 className="sr-only">Steps</h2>
 
         <div className="after:mt-4 after:block after:h-1 after:w-full after:rounded-lg after:bg-gray-200">
-          <ol
-            className={`grid grid-cols-${stageCount} text-sm font-medium text-gray-500`}
-          >
-            {stageEntries.map(([id, label], index) => {
-              const positionClass =
-                index === 0
-                  ? "justify-start"
-                  : index === stageEntries.length - 1
-                  ? "justify-end"
-                  : "justify-center";
-
-              const isActive = Number(id) < currentStep;
-              const dotColor = isActive
-                ? "bg-blue-600 text-white"
-                : "bg-gray-600 text-white";
-              const textColor = isActive ? "txt-blue" : "";
-
-              return (
-                <li
-                  key={id}
-                  className={`relative flex ${positionClass} ${textColor}`}
+          <ol className="grid grid-cols-3 text-sm font-medium text-teal">
+            <li className="relative flex justify-start text-blue">
+              <span className="absolute start-0 -bottom-[1.75rem] rounded-full bg-blue text-white">
+                <svg
+                  className="size-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
                 >
-                  <span
-                    className={`absolute ${
-                      index === 0
-                        ? "start-0"
-                        : index === stageEntries.length - 1
-                        ? "end-0"
-                        : "left-1/2 -translate-x-1/2"
-                    } -bottom-[1.75rem] rounded-full ${dotColor}`}
-                  >
-                    <svg
-                      className="size-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </span>
 
-                  <span className="hidden sm:block">{label}</span>
+              <span className="hidden sm:block">
+                {manuscript.current_step == 1
+                  ? "Manuscript Uploaded"
+                  : MANUSCRIPT_STAGES[manuscript.current_step + 1]}
+              </span>
 
-                  <svg
-                    className={`size-6 sm:hidden ${
-                      positionClass === "justify-center" ? "mx-auto" : ""
-                    }`}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
-                    />
-                  </svg>
-                </li>
-              );
-            })}
+              <svg
+                className="size-6 sm:hidden"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
+                />
+              </svg>
+            </li>
+
+            <li className="relative flex justify-center text-teal">
+              <span className="absolute -bottom-[1.75rem] left-1/2 -translate-x-1/2 rounded-full bg-teal text-white">
+                <svg
+                  className="size-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </span>
+
+              <span className="hidden sm:block">
+                {MANUSCRIPT_STAGES[manuscript.current_step]}
+              </span>
+
+              <svg
+                className="mx-auto size-6 sm:hidden"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </li>
+
+            <li className="relative flex justify-end ">
+              <span className="absolute end-0 -bottom-[1.75rem] rounded-full bg-teal text-white">
+                <svg
+                  className="size-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </span>
+
+              <span className="hidden sm:block">
+                {manuscript.current_step == 7
+                  ? "-"
+                  : MANUSCRIPT_STAGES[manuscript.current_step + 1]}
+              </span>
+
+              <svg
+                className="size-6 sm:hidden"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                />
+              </svg>
+            </li>
           </ol>
         </div>
       </div>
@@ -195,17 +240,24 @@ function BookDashboard() {
           <div className="info flex gap-10">
             <div className="info-wrapper flex gap-4">
               <label>Next Stage:</label>{" "}
-              <p>{MANUSCRIPT_STAGES[manuscript.current_step + 1]}</p>
+              <p>
+                {manuscript.current_step < 7
+                  ? MANUSCRIPT_STAGES[manuscript.current_step + 1]
+                  : "-"}
+              </p>
             </div>
             <div className="info-wrapper flex gap-4">
               <label>Description:</label> <p>{manuscript.description}</p>
             </div>
           </div>
         </div>
-        <div className="status flex-col">
-          <h2 className="text-nowrap">Progress Indicator</h2>
-          {/* {renderProgressIndicator(manuscript.current_step)} */}
-        </div>
+        {manuscript.current_step < 8 && (
+          <div className="status flex-col">
+            <h2 className="text-nowrap">Progress Indicator</h2>
+
+            {renderProgressIndicator()}
+          </div>
+        )}
         <div className="comments-card">
           <h2>Comments</h2>
           {comments.map((comment, index) => (
