@@ -34,13 +34,19 @@ jobs:
             echo "IMAGE_TAG=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
           fi
 
-      - name: Deploy example (placeholder)
-        run: |
-          echo "Deploying frontend image: ghcr.io/${{ github.repository }}-frontend:${{ env.IMAGE_TAG }}"
-
-          # Here we would add our actual deployment commands
-          # For example:
-          # - SSH into your server
-          # - Pull the image
-          # - Update configuration
-          # - Restart the service
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          script: |
+            cd /opt/quill
+            if grep -q "FRONTEND_IMAGE_TAG=" .env; then
+              sed -i "s/FRONTEND_IMAGE_TAG=.*/FRONTEND_IMAGE_TAG=${IMAGE_TAG}/" .env
+            else
+              echo "FRONTEND_IMAGE_TAG=${IMAGE_TAG}" >> .env
+            fi
+            docker compose pull frontend
+            docker compose up -d frontend
+            docker system prune -f

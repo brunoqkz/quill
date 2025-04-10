@@ -57,3 +57,14 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Tag latest for main branch
+        if: github.ref == 'refs/heads/main'
+        run: |
+          COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          echo "Tagged as sha-$COMMIT_SHA and latest"
+
+          echo "Creating latest tag based on sha-$COMMIT_SHA"
+          docker buildx imagetools create \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$COMMIT_SHA

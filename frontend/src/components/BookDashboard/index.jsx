@@ -52,12 +52,6 @@ function BookDashboard() {
       );
     }
 
-    const stageEntries = Object.entries(MANUSCRIPT_STAGES).filter(
-      ([id]) => Number(id) <= manuscript.current_step + 1 && Number(id) !== 8
-    );
-
-    const stageCount = stageEntries.length;
-
     return (
       <div>
         <h2 className="sr-only">Steps</h2>
