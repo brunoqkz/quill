@@ -55,8 +55,18 @@ function Manuscripts({ manuscripts, setManuscripts }) {
       );
 
       if (response.status === 200) {
-        // Update the manuscripts state to reflect the changes
-        // Move the manuscript to the next stage
+        // update the manuscripts state to reflect the changes
+        const updatedManuscripts = manuscripts.map((manuscript) => {
+          if (manuscript.id === manuscriptId) {
+            return {
+              ...manuscript,
+              current_step: manuscript.current_step + 1,
+            };
+          }
+          return manuscript;
+        });
+        setManuscripts(updatedManuscripts);
+        alert("Manuscript advanced successfully.");
       } else {
         throw new Error("Something went wrong.");
       }
@@ -114,27 +124,41 @@ function Manuscripts({ manuscripts, setManuscripts }) {
             <p>{MANUSCRIPT_STAGES[manuscript.current_step]}</p>
           </div>
           <div className="action">
-            <button
-              className="btn-action"
-              onClick={() => {
-                navigate(`/book/${manuscript.id}`, {
-                  state: { manuscript },
-                });
-              }}
-            >
-              {user && user.role_id == QUILL_ROLES.AUTHOR
-                ? "View Timeline"
-                : "View"}
-            </button>
-            {user && user.role_id != QUILL_ROLES.AUTHOR && (
+            {user && user.role_id == QUILL_ROLES.AUTHOR && (
               <button
-                className="btn-advance"
+                className="btn-action"
                 onClick={() => {
-                  handleAdvanceManuscript(manuscript.id);
+                  navigate(`/manuscript/${manuscript.id}`, {
+                    state: { manuscript },
+                  });
                 }}
               >
-                Advance
+                View Timeline
               </button>
+            )}
+            {user && user.role_id != QUILL_ROLES.AUTHOR && (
+              <>
+                <button
+                  className="btn-action"
+                  onClick={() => {
+                    navigate(`/book/${manuscript.id}`, {
+                      state: { manuscript },
+                    });
+                  }}
+                >
+                  View
+                </button>
+                {manuscript.current_step < 7 && (
+                  <button
+                    className="btn-advance"
+                    onClick={() => {
+                      handleAdvanceManuscript(manuscript.id);
+                    }}
+                  >
+                    Advance
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>
