@@ -249,6 +249,7 @@ function BookDashboard() {
         </div>
         <div className="status flex-col">
           <h2 className="text-nowrap">Progress Indicator</h2>
+
           {renderProgressIndicator()}
         </div>
         <div className="comments-card">
