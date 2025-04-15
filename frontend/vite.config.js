@@ -12,6 +12,7 @@ export default defineConfig({
     host: true,
     port: 5173,
     strictPort: true,
+    allowedHosts: ["quill.brunoqkz.dev", "localhost"],
   },
   optimizeDeps: {
     include: ["@tanstack/react-table"],
