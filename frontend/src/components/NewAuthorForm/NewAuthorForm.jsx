@@ -1,8 +1,8 @@
-import "./style.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthProvider";
 import { API_ENDPOINTS } from "../../utils/constants";
+import { useAuth } from "../AuthProvider";
+import "./NewAuthorForm.scss";
 
 /**
  * NewAuthorForm component

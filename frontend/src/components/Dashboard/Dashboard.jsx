@@ -1,12 +1,12 @@
-import "./style.scss";
-import { useAuth } from "../AuthProvider";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Manuscripts from "./Manuscripts";
 import { API_ENDPOINTS } from "../../utils/constants";
-import Summary from "./Summary";
+import { useAuth } from "../AuthProvider";
 import Comments from "./Comments";
+import "./Dashboard.scss";
+import Manuscripts from "./Manuscripts";
 import Progress from "./Progress";
+import Summary from "./Summary";
 
 /**
  * Dashboard component
@@ -62,7 +62,7 @@ function Dashboard() {
         data.map(async (manuscript) => {
           const comments = await fetchComments(manuscript.id);
           return { ...manuscript, comments };
-        })
+        }),
       );
       setManuscripts(manuscriptsWithComments);
       console.log("Fetched manuscripts:", manuscriptsWithComments);
@@ -86,12 +86,12 @@ function Dashboard() {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok && response.status !== 204) {
         throw new Error(
-          `Failed to fetch comments for manuscript ${manuscriptId}`
+          `Failed to fetch comments for manuscript ${manuscriptId}`,
         );
       }
 
@@ -100,7 +100,7 @@ function Dashboard() {
     } catch (error) {
       console.error(
         `Error fetching comments for manuscript ${manuscriptId}:`,
-        error
+        error,
       );
       return [];
     }

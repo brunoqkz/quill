@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../AuthProvider";
-import { useNavigate } from "react-router-dom";
-import "./style.scss";
+import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import TableData from "./TableData";
+import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../utils/constants";
+import { useAuth } from "../AuthProvider";
+import TableData from "./TableData";
+import "./UserManagement.scss";
 
 /**
  * UserManagement component
@@ -192,7 +192,7 @@ function UserManagement() {
    */
   const handleDelete = async (userId) => {
     const confirmation = window.confirm(
-      "Are you sure you want to delete this user?"
+      "Are you sure you want to delete this user?",
     );
     if (confirmation) {
       try {

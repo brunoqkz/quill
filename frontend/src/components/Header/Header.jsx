@@ -1,7 +1,7 @@
-import "./style.scss";
+import { useNavigate } from "react-router-dom";
 import logo from "../../assets/quill_logo_navy.png";
 import { useAuth } from "../AuthProvider";
-import { useNavigate } from "react-router-dom";
+import "./Header.scss";
 
 function Header() {
   const { user, logout } = useAuth();

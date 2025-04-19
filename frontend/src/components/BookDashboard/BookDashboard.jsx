@@ -1,9 +1,9 @@
-import "./style.scss";
-import { useAuth } from "../AuthProvider";
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
-import { API_ENDPOINTS, MANUSCRIPT_STAGES } from "../../utils/constants";
 import DOMPurify from "dompurify";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { API_ENDPOINTS, MANUSCRIPT_STAGES } from "../../utils/constants";
+import { useAuth } from "../AuthProvider";
+import "./BookDashboard.scss";
 
 /**
  * BookDashboard component
@@ -13,7 +13,6 @@ import DOMPurify from "dompurify";
  */
 function BookDashboard() {
   const { user, token, isTokenValid } = useAuth();
-  const { manuscriptId } = useParams();
   const location = useLocation();
   const manuscript = location.state?.manuscript;
   const [comments, setComments] = useState([]);
@@ -197,7 +196,7 @@ function BookDashboard() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ content: sanitizedComment }),
-        }
+        },
       );
 
       if (response.status === 201) {

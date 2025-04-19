@@ -1,10 +1,9 @@
-import "./style.scss";
-import { useAuth } from "../../AuthProvider";
-import { useNavigate } from "react-router-dom";
-import { QUILL_ROLES, MANUSCRIPT_STAGES } from "../../../utils/constants";
 import { GoBook } from "react-icons/go";
-import { TfiComments } from "react-icons/tfi";
 import { MdOutlineCancel } from "react-icons/md";
+import { TfiComments } from "react-icons/tfi";
+import { MANUSCRIPT_STAGES, QUILL_ROLES } from "../../../utils/constants";
+import { useAuth } from "../../AuthProvider";
+import "./Summary.scss";
 
 /**
  * Summary component
@@ -16,8 +15,6 @@ import { MdOutlineCancel } from "react-icons/md";
  */
 function Summary({ manuscripts }) {
   const { user } = useAuth();
-
-  const navigate = useNavigate();
 
   /**
    * Get total number of comments across all manuscripts   *

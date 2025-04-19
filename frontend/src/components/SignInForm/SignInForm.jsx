@@ -1,7 +1,7 @@
-import "./style.scss";
 import { useState } from "react";
-import { useAuth } from "../AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthProvider";
+import "./SignInForm.scss";
 
 /**
  * SignInForm component

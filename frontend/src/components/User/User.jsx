@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { useAuth } from "../AuthProvider";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { API_ENDPOINTS } from "../../utils/constants";
-import "./style.scss";
+import { useAuth } from "../AuthProvider";
+import "./User.scss";
 
 /**
  * User component
@@ -109,7 +109,7 @@ function User() {
   // Handle delete user request
   const handleDelete = async () => {
     const confirmation = window.confirm(
-      "Are you sure you want to delete this user?"
+      "Are you sure you want to delete this user?",
     );
     if (confirmation) {
       try {
@@ -190,8 +190,8 @@ function User() {
               {userData.role_id === 1
                 ? "Admin"
                 : userData.role_id === 2
-                ? "Employee"
-                : "Author"}
+                  ? "Employee"
+                  : "Author"}
             </span>
           )}
         </div>

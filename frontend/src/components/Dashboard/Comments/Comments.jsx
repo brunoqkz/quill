@@ -1,4 +1,4 @@
-import "./style.scss";
+import "./Comments.scss";
 
 /**
  * Comments component
@@ -18,7 +18,7 @@ function Comments({ manuscripts }) {
       manuscript.comments.map((comment) => ({
         ...comment,
         manuscriptTitle: manuscript.title,
-      }))
+      })),
     );
     // Limit the number of comments to show
     let commentsToShow = 3;
