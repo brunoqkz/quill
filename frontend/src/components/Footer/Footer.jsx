@@ -1,8 +1,8 @@
-import "./style.scss";
 import logo from "../../assets/quill_logo_grey.png";
 import socialsInstagram from "../../assets/socials_instagram.png";
-import socialsX from "../../assets/socials_x.png";
 import socialsLinkedIn from "../../assets/socials_linkedin.png";
+import socialsX from "../../assets/socials_x.png";
+import "./Footer.scss";
 
 function Footer() {
   return (

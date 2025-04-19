@@ -1,12 +1,12 @@
 import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
   flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import "./style.scss";
+import "./TableData.scss";
 
 /**
  * TableData Child Component
@@ -46,7 +46,7 @@ function TableData({ data, columns }) {
                 >
                   {flexRender(
                     header.column.columnDef.header,
-                    header.getContext()
+                    header.getContext(),
                   )}
                   {header.column.getIsSorted()
                     ? header.column.getIsSorted() === "asc"

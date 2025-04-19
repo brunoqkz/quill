@@ -1,5 +1,5 @@
-import "./style.scss";
 import { MANUSCRIPT_STAGES } from "../../../utils/constants";
+import "./Progress.scss";
 
 /**
  * Progress component

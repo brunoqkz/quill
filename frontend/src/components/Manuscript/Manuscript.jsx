@@ -1,15 +1,10 @@
-import "./style.scss";
-import {
-  API_ENDPOINTS,
-  QUILL_ROLES,
-  MANUSCRIPT_STAGES,
-} from "../../utils/constants";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
-import { useAuth } from "../AuthProvider";
 import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { MANUSCRIPT_STAGES } from "../../utils/constants";
+import { useAuth } from "../AuthProvider";
+import "./Manuscript.scss";
 
 function Manuscript() {
-  const { manuscriptId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const manuscript = location.state?.manuscript;

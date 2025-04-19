@@ -1,9 +1,9 @@
-import { createContext, useContext, useState } from "react";
 import {
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
-  sendPasswordResetEmail,
 } from "firebase/auth";
+import { createContext, useContext, useState } from "react";
 import { auth } from "../../../firebase";
 
 /**
@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       );
-      const idToken = await userCredential.user.getIdToken();
 
       const idTokenResult = await userCredential.user.getIdTokenResult();
       const claims = idTokenResult.claims;

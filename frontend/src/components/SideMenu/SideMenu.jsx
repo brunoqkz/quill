@@ -1,8 +1,8 @@
-import "./style.scss";
-import { useAuth } from "../AuthProvider";
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { QUILL_ROLES } from "../../utils/constants";
+import { useAuth } from "../AuthProvider";
+import "./SideMenu.scss";
 
 /**
  * SideMenu component renders a side menu for the application.

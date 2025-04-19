@@ -1,4 +1,4 @@
-import "./style.scss";
+import "./NotFoundPage.scss";
 
 /**
  * NotFoundPage component

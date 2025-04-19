@@ -1,12 +1,11 @@
-import "./style.scss";
-import { useAuth } from "../../AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import {
-  QUILL_ROLES,
-  MANUSCRIPT_STAGES,
   API_ENDPOINTS,
+  MANUSCRIPT_STAGES,
+  QUILL_ROLES,
 } from "../../../utils/constants";
+import { useAuth } from "../../AuthProvider";
+import "./Manuscripts.scss";
 
 /**
  * Manuscripts component
@@ -51,7 +50,7 @@ function Manuscripts({ manuscripts, setManuscripts }) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
