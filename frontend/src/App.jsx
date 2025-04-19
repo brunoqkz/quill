@@ -1,18 +1,18 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "./components/AuthProvider";
-import BookDashboard from "./components/BookDashboard";
-import Dashboard from "./components/Dashboard";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import Manuscript from "./components/Manuscript";
-import NewAuthorForm from "./components/NewAuthorForm";
-import NewUserForm from "./components/NewUserForm";
-import NotFoundPage from "./components/NotFoundPage";
-import SideMenu from "./components/SideMenu";
-import SignInForm from "./components/SignInForm";
-import User from "./components/User";
-import UserManagement from "./components/UserManagement";
+import { BookDashboard } from "./components/BookDashboard";
+import { Dashboard } from "./components/Dashboard";
+import { Footer } from "./components/Footer";
+import { Header } from "./components/Header";
+import { Manuscript } from "./components/Manuscript";
+import { NewAuthorForm } from "./components/NewAuthorForm";
+import { NewUserForm } from "./components/NewUserForm";
+import { NotFoundPage } from "./components/NotFoundPage";
+import { SideMenu } from "./components/SideMenu";
+import { SignInForm } from "./components/SignInForm";
+import { User } from "./components/User";
+import { UserManagement } from "./components/UserManagement";
 
 function App() {
   return (
