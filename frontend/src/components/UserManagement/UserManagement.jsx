@@ -3,7 +3,7 @@ import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../utils/constants";
 import { useAuth } from "../AuthProvider";
-import TableData from "./TableData";
+import { TableData } from "./TableData";
 import "./UserManagement.scss";
 
 /**

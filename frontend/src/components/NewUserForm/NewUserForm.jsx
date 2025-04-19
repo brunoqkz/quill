@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../utils/constants";
 import { useAuth } from "../AuthProvider";
-import "./NewUserForm.css";
+import "./NewUserForm.scss";
 
 /**
  * NewUserForm component

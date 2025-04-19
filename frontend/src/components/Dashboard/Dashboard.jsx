@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../utils/constants";
 import { useAuth } from "../AuthProvider";
-import Comments from "./Comments";
+import { Comments } from "./Comments";
 import "./Dashboard.scss";
-import Manuscripts from "./Manuscripts";
-import Progress from "./Progress";
-import Summary from "./Summary";
+import { Manuscripts } from "./Manuscripts";
+import { Progress } from "./Progress";
+import { Summary } from "./Summary";
 
 /**
  * Dashboard component
